@@ -43,9 +43,9 @@ resource "azurerm_storage_container" "TFSTATE_CONTAINER" {
 
 resource "azurerm_role_definition" "TFSTATE_READ_WRITE_ROLE" {
   for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name        = "${data.github_repository.repo.name}-${each.key}"
+  name        = "${data.github_repository.repo.name}-${each.key}-TFSTATE-role"
   scope       = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
-  description = "${each.key} - TFSTATE read/write role"
+  description = "${each.key} - TFSTATE read/write Role"
   permissions {
     actions     = ["*"]
     not_actions = []
@@ -54,9 +54,9 @@ resource "azurerm_role_definition" "TFSTATE_READ_WRITE_ROLE" {
 
 resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
   for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name        = "${data.github_repository.repo.name}-${each.key}-role"
+  name        = "${data.github_repository.repo.name}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
   scope       = azurerm_resource_group.DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP[each.key].id
-  description = "${each.key} - Deployment Environment Provisioner"
+  description = "${each.key} - Deployment Environment Provisioner Role"
   permissions {
     actions     = ["*"]
     not_actions = []
