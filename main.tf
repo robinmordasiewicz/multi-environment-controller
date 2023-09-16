@@ -13,7 +13,7 @@ module "oidc_sp" {
   version          = ">=1.2.0"
   entity_type      = "environment"
   repository_name  = data.github_repository.repo.full_name
-  depends_on = [data.azurerm_client_config.current, azurerm_storage_container.container]
+  depends_on       = [data.azurerm_client_config.current, azurerm_storage_container.container]
 }
 
 resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
