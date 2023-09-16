@@ -30,7 +30,7 @@ resource "github_repository_environment" "repo_environment" {
 }
 
 resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "ARM_SUBSCRIPTION_ID"
   plaintext_value = each.value.ARM_SUBSCRIPTION_ID
@@ -38,7 +38,7 @@ resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
 }
 
 resource "github_actions_environment_secret" "ARM_TENANT_ID" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "ARM_TENANT_ID"
   plaintext_value = var.ARM_TENANT_ID
@@ -46,7 +46,7 @@ resource "github_actions_environment_secret" "ARM_TENANT_ID" {
 }
 
 resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "ARM_CLIENT_ID"
   plaintext_value = module.oidc_sp[each.key].service_principal.application_id
@@ -54,7 +54,7 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
 }
 
 resource "github_actions_environment_secret" "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME"
   plaintext_value = azurerm_storage_account.STORAGE_ACCOUNT[each.key].name
@@ -62,7 +62,7 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME
 }
 
 resource "github_actions_environment_secret" "AZURE_TFSTATE_RESOURCE_GROUP_NAME" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "AZURE_TFSTATE_RESOURCE_GROUP_NAME"
   plaintext_value = "${data.github_repository.repo.name}-${each.key}-TFSTATE"
@@ -188,8 +188,8 @@ resource "azurerm_storage_container" "container" {
 }
 
 resource "azurerm_role_definition" "deployment_environment_provisioner" {
-  for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name        = "${data.github_repository.repo.name}-${each.key}"
+  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  name     = "${data.github_repository.repo.name}-${each.key}"
   #scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
   scope       = azurerm_resource_group.deployment_environment[each.key].id
   description = "${each.key} - Deployment Environment Provisioner"
@@ -201,9 +201,9 @@ resource "azurerm_role_definition" "deployment_environment_provisioner" {
 }
 
 resource "azurerm_role_assignment" "provisioner" {
-  for_each             = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   #scope                = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
-  scope       = azurerm_resource_group.deployment_environment[each.key].id
+  scope                = azurerm_resource_group.deployment_environment[each.key].id
   role_definition_name = azurerm_role_definition.deployment_environment_provisioner[each.key].name
   principal_id         = module.oidc_sp[each.key].service_principal.object_id
 }
