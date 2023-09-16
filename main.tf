@@ -179,8 +179,7 @@ resource "null_resource" "environments" {
     command = "gh workflow run terraform-action.yml --ref $deployment_environment -R $repository"
     environment = {
       deployment_environment = each.key
-      #repository             = data.github_repository.repo.full_name
-      repository = data.github_repository.repo.name
+      repository             = data.github_repository.repo.full_name
     }
   }
   depends_on = [github_branch.environment]
