@@ -17,14 +17,6 @@ variable "AZURE_USERNAME" {
   type = string
 }
 
-variable "AZURE_DISPLAYNAME" {
-  type = string
-}
-
-variable "AZURE_USER_PRINCIPLE_NAME" {
-  type = string
-}
-
 variable "ARM_TENANT_ID" {
   type = string
 }
