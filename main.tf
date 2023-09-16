@@ -1,5 +1,4 @@
 data "azurerm_client_config" "current" {}
-#data "azurerm_subscription" "current" {}
 
 data "github_repository" "repo" {
   full_name = var.REPOSITORY_NAME
@@ -47,7 +46,6 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME
   for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment = each.key
   secret_name = "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME"
-  # plaintext_value = "oidc${lower(each.key)}"
   plaintext_value = azurerm_storage_account.STORAGE_ACCOUNT[each.key].name
   repository      = data.github_repository.repo.name
   depends_on      = [github_repository_environment.repo_environment]
@@ -71,11 +69,11 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_CONTAINER_NAME" {
   depends_on      = [github_repository_environment.repo_environment]
 }
 
-resource "github_actions_environment_secret" "TF_VAR_AZURE_USERNAME" {
+resource "github_actions_environment_secret" "TF_VAR_OWNER_EMAIL" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = each.key
-  secret_name     = "TF_VAR_AZURE_USERNAME"
-  plaintext_value = var.AZURE_USERNAME
+  secret_name     = "TF_VAR_OWNER_EMAIL"
+  plaintext_value = var.OWNER_EMAIL
   repository      = data.github_repository.repo.name
   depends_on      = [github_repository_environment.repo_environment]
 }
@@ -137,7 +135,7 @@ resource "github_branch" "environment" {
     github_actions_environment_secret.AZURE_TFSTATE_STORAGE_ACCOUNT_NAME,
     github_actions_environment_secret.AZURE_TFSTATE_RESOURCE_GROUP_NAME,
     github_actions_environment_secret.AZURE_TFSTATE_CONTAINER_NAME,
-    github_actions_environment_secret.TF_VAR_AZURE_USERNAME,
+    github_actions_environment_secret.TF_VAR_OWNER_EMAIL,
     github_actions_environment_secret.TF_VAR_AZURE_REGION,
   ]
 }
@@ -158,9 +156,8 @@ resource "azurerm_resource_group" "terraform_state" {
   name     = "${data.github_repository.repo.name}-${each.key}-TFSTATE"
   location = var.AZURE_REGION
   tags = {
-    Username = var.AZURE_USERNAME
+    Username = var.OWNER_EMAIL
   }
-  #depends_on = [data.azurerm_client_config.current, data.azurerm_subscription.current]
   depends_on = [data.azurerm_client_config.current]
 }
 
