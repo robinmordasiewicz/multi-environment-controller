@@ -2,7 +2,7 @@ environments = [
   {
     name            = "Production",
     SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
-    AZURE_DEPLOYED  = "false"
+    AZURE_DEPLOYED  = "true"
     OWNER_EMAIL     = "user1@example.com"
   },
   {
