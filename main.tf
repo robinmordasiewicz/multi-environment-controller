@@ -159,8 +159,6 @@ resource "azurerm_resource_group" "terraform_state" {
   location = var.AZURE_REGION
   tags = {
     Username            = var.AZURE_USERNAME
-    Display_Name        = var.AZURE_DISPLAYNAME
-    User_Principle_Name = var.AZURE_USER_PRINCIPLE_NAME
   }
   depends_on = [data.azurerm_client_config.current, data.azurerm_subscription.current]
 }
