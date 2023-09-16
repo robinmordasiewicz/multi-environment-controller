@@ -156,6 +156,16 @@ resource "azurerm_resource_group" "terraform_state" {
   depends_on = [data.azurerm_client_config.current]
 }
 
+resource "azurerm_resource_group" "deployment_environment" {
+  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  name     = "${data.github_repository.repo.name}-${each.key}"
+  location = each.value.AZURE_REGION
+  tags = {
+    Username = each.value.OWNER_EMAIL
+  }
+  depends_on = [data.azurerm_client_config.current]
+}
+
 resource "random_integer" "oidc" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   min      = 10000
@@ -180,7 +190,8 @@ resource "azurerm_storage_container" "container" {
 resource "azurerm_role_definition" "deployment_environment_provisioner" {
   for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   name        = "${data.github_repository.repo.name}-${each.key}"
-  scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+  #scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+  scope       = azurerm_resource_group.deployment_environment[each.key].id
   description = "${each.key} - Deployment Environment Provisioner"
   permissions {
     actions     = ["*"]
@@ -191,7 +202,8 @@ resource "azurerm_role_definition" "deployment_environment_provisioner" {
 
 resource "azurerm_role_assignment" "provisioner" {
   for_each             = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  scope                = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+  #scope                = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+  scope       = azurerm_resource_group.deployment_environment[each.key].id
   role_definition_name = azurerm_role_definition.deployment_environment_provisioner[each.key].name
   principal_id         = module.oidc_sp[each.key].service_principal.object_id
 }
@@ -201,6 +213,5 @@ resource "azurerm_role_assignment" "state" {
   scope                = azurerm_storage_container.container[each.key].resource_manager_id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = module.oidc_sp[each.key].service_principal.object_id
-  depends_on           = [azurerm_role_assignment.provisioner]
 }
 
