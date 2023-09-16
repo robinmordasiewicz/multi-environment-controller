@@ -4,7 +4,7 @@ data "github_repository" "repo" {
   full_name = var.REPOSITORY_NAME
 }
 
-module "oidc_sp" {
+module "SERVICE_PRINCIPAL" {
   for_each         = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment_name = each.value.name
   identity_name    = "${data.github_repository.repo.name}-${each.value.name}"
@@ -19,12 +19,12 @@ resource "github_repository_environment" "repo_environment" {
   environment = each.key
   repository  = data.github_repository.repo.name
   depends_on = [
-    azurerm_storage_container.container,
+    azurerm_storage_container.TFSTATE_CONTAINER,
     azurerm_role_assignment.provisioner,
     azurerm_role_assignment.state,
-    azurerm_resource_group.terraform_state,
-    azurerm_storage_account.STORAGE_ACCOUNT,
-    azurerm_role_definition.deployment_environment_provisioner
+    azurerm_resource_group.TFSTATE_RESOURCE_GROUP,
+    azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT,
+    azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE
   ]
 }
 
@@ -48,7 +48,7 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "ARM_CLIENT_ID"
-  plaintext_value = module.oidc_sp[each.key].service_principal.application_id
+  plaintext_value = module.SERVICE_PRINCIPAL[each.key].service_principal.application_id
   repository      = data.github_repository.repo.name
 }
 
@@ -56,7 +56,7 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME"
-  plaintext_value = azurerm_storage_account.STORAGE_ACCOUNT[each.key].name
+  plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
   repository      = data.github_repository.repo.name
 }
 
@@ -73,7 +73,7 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_CONTAINER_NAME" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "AZURE_TFSTATE_CONTAINER_NAME"
-  plaintext_value = azurerm_storage_container.container[each.key].name
+  plaintext_value = azurerm_storage_container.TFSTATE_CONTAINER[each.key].name
   repository      = data.github_repository.repo.name
 }
 
@@ -145,7 +145,7 @@ resource "github_branch_protection" "protection" {
   depends_on = [github_branch.environment]
 }
 
-resource "azurerm_resource_group" "terraform_state" {
+resource "azurerm_resource_group" "TFSTATE_RESOURCE_GROUP" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   name     = "${data.github_repository.repo.name}-${each.key}-TFSTATE"
   location = each.value.AZURE_REGION
@@ -171,22 +171,22 @@ resource "random_integer" "oidc" {
   max      = 99999
 }
 
-resource "azurerm_storage_account" "STORAGE_ACCOUNT" {
+resource "azurerm_storage_account" "TFSTATE_STORAGE_ACCOUNT" {
   for_each                 = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  resource_group_name      = azurerm_resource_group.terraform_state[each.key].name
-  location                 = azurerm_resource_group.terraform_state[each.key].location
+  resource_group_name      = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].name
+  location                 = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].location
   name                     = "${random_integer.oidc[each.key].result}${lower(each.key)}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "container" {
+resource "azurerm_storage_container" "TFSTATE_CONTAINER" {
   for_each             = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   name                 = lower(each.key)
-  storage_account_name = azurerm_storage_account.STORAGE_ACCOUNT[each.key].name
+  storage_account_name = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
 }
 
-resource "azurerm_role_definition" "deployment_environment_provisioner" {
+resource "azurerm_role_definition" "TFSTATE_READ_WRITE_ROLE" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   name     = "${data.github_repository.repo.name}-${each.key}"
   #scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
@@ -196,22 +196,36 @@ resource "azurerm_role_definition" "deployment_environment_provisioner" {
     actions     = ["*"]
     not_actions = []
   }
-  #depends_on = [data.azurerm_client_config.current, azurerm_storage_container.container]
-  depends_on = [azurerm_storage_container.container]
+  #depends_on = [data.azurerm_client_config.current, azurerm_storage_container.TFSTATE_CONTAINER]
+  depends_on = [azurerm_storage_container.TFSTATE_CONTAINER]
+}
+
+resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
+  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  name     = "${data.github_repository.repo.name}-${each.key}-role"
+  #scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+  scope       = azurerm_resource_group.deployment_environment[each.key].id
+  description = "${each.key} - Deployment Environment Provisioner"
+  permissions {
+    actions     = ["*"]
+    not_actions = []
+  }
+  #depends_on = [data.azurerm_client_config.current, azurerm_storage_container.TFSTATE_CONTAINER]
+  depends_on = [azurerm_storage_container.TFSTATE_CONTAINER]
 }
 
 resource "azurerm_role_assignment" "provisioner" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   #scope                = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
   scope                = azurerm_resource_group.deployment_environment[each.key].id
-  role_definition_name = azurerm_role_definition.deployment_environment_provisioner[each.key].name
-  principal_id         = module.oidc_sp[each.key].service_principal.object_id
+  role_definition_name = azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE[each.key].name
+  principal_id         = module.SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
 
 resource "azurerm_role_assignment" "state" {
   for_each             = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  scope                = azurerm_storage_container.container[each.key].resource_manager_id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = module.oidc_sp[each.key].service_principal.object_id
+  scope                = azurerm_storage_container.TFSTATE_CONTAINER[each.key].resource_manager_id
+  role_definition_name = azurerm_role_definition.TFSTATE_READ_WRITE_ROLE[each.key].name
+  principal_id         = module.SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
 
