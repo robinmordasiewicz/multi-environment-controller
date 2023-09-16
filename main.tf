@@ -20,7 +20,7 @@ resource "random_integer" "random_number" {
 resource "azurerm_storage_account" "TFSTATE_STORAGE_ACCOUNT" {
   for_each                 = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   resource_group_name      = azurerm_resource_group.DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP[each.key].name
-  location                 = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].location
+  location                 = azurerm_resource_group.DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP[each.key].location
   name                     = "${random_integer.random_number[each.key].result}${lower(each.key)}"
   account_tier             = "Standard"
   account_replication_type = "LRS"
