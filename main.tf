@@ -1,4 +1,4 @@
-data "azurerm_client_config" "current" {}
+#data "azurerm_client_config" "current" {}
 
 data "github_repository" "repo" {
   full_name = var.REPOSITORY_NAME
@@ -12,7 +12,6 @@ module "oidc_sp" {
   version          = ">=1.2.0"
   entity_type      = "environment"
   repository_name  = data.github_repository.repo.full_name
-  depends_on       = [data.azurerm_client_config.current, azurerm_storage_container.container]
 }
 
 resource "github_repository_environment" "repo_environment" {
@@ -153,7 +152,7 @@ resource "azurerm_resource_group" "terraform_state" {
   tags = {
     Username = each.value.OWNER_EMAIL
   }
-  depends_on = [data.azurerm_client_config.current]
+  #depends_on = [data.azurerm_client_config.current]
 }
 
 resource "azurerm_resource_group" "deployment_environment" {
@@ -163,7 +162,7 @@ resource "azurerm_resource_group" "deployment_environment" {
   tags = {
     Username = each.value.OWNER_EMAIL
   }
-  depends_on = [data.azurerm_client_config.current]
+  #depends_on = [data.azurerm_client_config.current]
 }
 
 resource "random_integer" "oidc" {
@@ -197,7 +196,8 @@ resource "azurerm_role_definition" "deployment_environment_provisioner" {
     actions     = ["*"]
     not_actions = []
   }
-  depends_on = [data.azurerm_client_config.current, azurerm_storage_container.container]
+  #depends_on = [data.azurerm_client_config.current, azurerm_storage_container.container]
+  depends_on = [azurerm_storage_container.container]
 }
 
 resource "azurerm_role_assignment" "provisioner" {
