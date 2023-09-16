@@ -6,7 +6,6 @@ variable "environments" {
     OWNER_EMAIL         = string
   }))
   default     = []
-  sensitive   = true
   description = "List of applications that will be used to create github branches and environments"
 }
 
