@@ -71,13 +71,3 @@ az role assignment create --role contributor --subscription $SUB_ID --assignee-o
 
 https://www.youtube.com/watch?v=lsWOx9bzAwY
 
-az account set --subscription "Canada-PAYG"
-
-```
-gh workflow run terraform-action.yml --ref Production -R robinmordasiewicz/fortinet-secure-cloud-blueprint-terraform
-gh workflow run terraform-action.yml --ref Development -R robinmordasiewicz/fortinet-secure-cloud-blueprint-terraform
-gh workflow run terraform-action.yml --ref Staging -R robinmordasiewicz/fortinet-secure-cloud-blueprint-terraform
-
-gh workflow run debug.yml -R robinmordasiewicz/configure-githubrepo-azure
-
-```
