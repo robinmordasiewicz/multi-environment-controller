@@ -1,5 +1,5 @@
 data "azurerm_client_config" "current" {}
-data "azurerm_subscription" "current" {}
+#data "azurerm_subscription" "current" {}
 
 data "github_repository" "repo" {
   full_name = var.REPOSITORY_NAME
@@ -13,7 +13,8 @@ module "oidc_sp" {
   version          = ">=1.2.0"
   entity_type      = "environment"
   repository_name  = data.github_repository.repo.full_name
-  depends_on       = [data.azurerm_client_config.current, data.azurerm_subscription.current, azurerm_storage_container.container]
+  #depends_on       = [data.azurerm_client_config.current, data.azurerm_subscription.current, azurerm_storage_container.container]
+  depends_on       = [data.azurerm_client_config.current, azurerm_storage_container.container]
 }
 
 resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
@@ -160,7 +161,8 @@ resource "azurerm_resource_group" "terraform_state" {
   tags = {
     Username            = var.AZURE_USERNAME
   }
-  depends_on = [data.azurerm_client_config.current, data.azurerm_subscription.current]
+  #depends_on = [data.azurerm_client_config.current, data.azurerm_subscription.current]
+  depends_on = [ data.azurerm_client_config.current ]
 }
 
 resource "random_integer" "oidc" {
