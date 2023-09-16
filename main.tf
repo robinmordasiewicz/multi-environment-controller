@@ -101,14 +101,14 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_STORAGE_ACCOUNT_NAME
   repository      = data.github_repository.repo.name
 }
 
-#resource "github_actions_environment_secret" "AZURE_DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP_NAME" {
-#  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-#  environment     = github_repository_environment.repo_environment[each.key].environment
-#  secret_name     = "AZURE_DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP_NAME"
-#  plaintext_value = "${data.github_repository.repo.name}-${each.key}-TFSTATE"
-#  repository      = data.github_repository.repo.name
-#  #depends_on      = [github_repository_environment.repo_environment]
-#}
+resource "github_actions_environment_secret" "AZURE_DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP_NAME" {
+  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  environment     = github_repository_environment.repo_environment[each.key].environment
+  secret_name     = "AZURE_DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP_NAME"
+  plaintext_value = "${data.github_repository.repo.name}-${each.key}-TFSTATE"
+  repository      = data.github_repository.repo.name
+  #depends_on      = [github_repository_environment.repo_environment]
+}
 
 resource "github_actions_environment_secret" "AZURE_TFSTATE_CONTAINER_NAME" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
@@ -166,8 +166,6 @@ resource "github_branch" "environment" {
     github_actions_environment_secret.ARM_SUBSCRIPTION_ID,
     github_actions_environment_secret.ARM_TENANT_ID,
     github_actions_environment_secret.ARM_CLIENT_ID,
-    github_actions_environment_secret.AZURE_DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP_NAME,
-    github_actions_environment_secret.AZURE_TFSTATE_STORAGE_ACCOUNT_NAME,
     github_actions_environment_secret.AZURE_TFSTATE_CONTAINER_NAME,
     github_actions_environment_secret.TF_VAR_OWNER_EMAIL,
     github_actions_environment_secret.TF_VAR_AZURE_REGION,
