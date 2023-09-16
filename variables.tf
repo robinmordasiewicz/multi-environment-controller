@@ -33,3 +33,7 @@ variable "REPOSITORY_NAME" {
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
 }
 
+variable "OWNER_EMAIL" {
+  type        = string
+  description = "email address for the owner of resources used to tag azure resource groups"
+}
