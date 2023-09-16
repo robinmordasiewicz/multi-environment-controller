@@ -1,5 +1,7 @@
 # Control repository for deployment environments.
 
+Service Pricipals are used to authenticate this workflow
+
 [![Launch Cloud Shell](/azure/cloud-shell/media/embed-cloud-shell/launch-cloud-shell-1.png)](https://shell.azure.com)
 
 https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_configuration#creating-a-service-principal
