@@ -42,8 +42,8 @@ resource "azurerm_storage_container" "TFSTATE_CONTAINER" {
 }
 
 resource "azurerm_role_definition" "TFSTATE_READ_WRITE_ROLE" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name     = "${data.github_repository.repo.name}-${each.key}"
+  for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  name        = "${data.github_repository.repo.name}-${each.key}"
   scope       = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
   description = "${each.key} - TFSTATE read/write role"
   permissions {
@@ -53,8 +53,8 @@ resource "azurerm_role_definition" "TFSTATE_READ_WRITE_ROLE" {
 }
 
 resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name     = "${data.github_repository.repo.name}-${each.key}-role"
+  for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  name        = "${data.github_repository.repo.name}-${each.key}-role"
   scope       = azurerm_resource_group.DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP[each.key].id
   description = "${each.key} - Deployment Environment Provisioner"
   permissions {
@@ -74,7 +74,7 @@ module "SERVICE_PRINCIPAL" {
 }
 
 resource "azurerm_role_assignment" "provisioner" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each             = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   scope                = azurerm_resource_group.DEPLOYMENT_ENVIRONMENT_RESOURCE_GROUP[each.key].id
   role_definition_name = azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE[each.key].name
   principal_id         = module.SERVICE_PRINCIPAL[each.key].service_principal.object_id
