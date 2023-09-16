@@ -65,8 +65,7 @@ resource "github_repository_environment" "repo_environment" {
   environment = each.key
   repository  = data.github_repository.repo.name
   depends_on = [
-    azurerm_role_assignment.provisioner,
-    azurerm_role_assignment.state,
+    azurerm_role_assignment.provisioner
   ]
 }
 
