@@ -3,6 +3,7 @@ variable "environments" {
     name                = string
     ARM_SUBSCRIPTION_ID = string
     AZURE_DEPLOYED      = string
+    AZURE_REGION        = string
     OWNER_EMAIL         = string
   }))
   default     = []
