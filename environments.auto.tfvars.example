@@ -1,0 +1,17 @@
+environments = [
+  {
+    name           = "Production",
+    subscriptionid = "86753098-8675-3098-675309-8675309867"
+    deployed       = "true"
+  },
+  {
+    name           = "Development",
+    subscriptionid = "86753098-8675-3098-675309-8675309867"
+    deployed       = "false"
+  },
+  {
+    name           = "Staging",
+    subscriptionid = "86753098-8675-3098-675309-8675309867"
+    deployed       = "false"
+  }
+]
