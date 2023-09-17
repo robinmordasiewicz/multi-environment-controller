@@ -153,32 +153,32 @@ resource "null_resource" "environments" {
       repository             = data.github_repository.repo.full_name
     }
   }
-  depends_on = [github_branch.environment]
+#  depends_on = [github_branch.environment]
 }
 
-resource "github_branch" "environment" {
-  for_each   = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  repository = data.github_repository.repo.name
-  branch     = each.key
-  depends_on = [
-    github_actions_environment_variable.AZURE_DEPLOYED,
-    github_actions_environment_secret.ARM_SUBSCRIPTION_ID,
-    github_actions_environment_secret.ARM_TENANT_ID,
-    github_actions_environment_secret.ARM_CLIENT_ID,
-    github_actions_environment_secret.AZURE_TFSTATE_CONTAINER_NAME,
-    github_actions_environment_secret.TF_VAR_OWNER_EMAIL,
-    github_actions_environment_secret.TF_VAR_AZURE_REGION,
-  ]
-}
+#resource "github_branch" "environment" {
+#  for_each   = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+#  repository = data.github_repository.repo.name
+#  branch     = each.key
+#  depends_on = [
+#    github_actions_environment_variable.AZURE_DEPLOYED,
+#    github_actions_environment_secret.ARM_SUBSCRIPTION_ID,
+#    github_actions_environment_secret.ARM_TENANT_ID,
+#    github_actions_environment_secret.ARM_CLIENT_ID,
+#    github_actions_environment_secret.AZURE_TFSTATE_CONTAINER_NAME,
+#    github_actions_environment_secret.TF_VAR_OWNER_EMAIL,
+#    github_actions_environment_secret.TF_VAR_AZURE_REGION,
+#  ]
+#}
 
-resource "github_branch_protection" "protection" {
-  for_each      = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  repository_id = data.github_repository.repo.node_id
-  pattern       = each.key
-  required_pull_request_reviews {
-    dismiss_stale_reviews           = true
-    required_approving_review_count = 1
-  }
-  depends_on = [github_branch.environment]
-}
+#resource "github_branch_protection" "protection" {
+#  for_each      = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+#  repository_id = data.github_repository.repo.node_id
+#  pattern       = each.key
+#  required_pull_request_reviews {
+#    dismiss_stale_reviews           = true
+#    required_approving_review_count = 1
+#  }
+#  depends_on = [github_branch.environment]
+#}
 
