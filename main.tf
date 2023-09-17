@@ -153,7 +153,7 @@ resource "null_resource" "environments" {
       repository             = data.github_repository.repo.full_name
     }
   }
-#  depends_on = [github_branch.environment]
+  #  depends_on = [github_branch.environment]
 }
 
 #resource "github_branch" "environment" {
