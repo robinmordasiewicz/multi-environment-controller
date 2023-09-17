@@ -107,7 +107,6 @@ resource "github_actions_environment_secret" "AZURE_RESOURCE_GROUP_NAME" {
   secret_name     = "AZURE_RESOURCE_GROUP_NAME"
   plaintext_value = "${data.github_repository.repo.name}-${each.key}"
   repository      = data.github_repository.repo.name
-  #depends_on      = [github_repository_environment.repo_environment]
 }
 
 resource "github_actions_environment_secret" "AZURE_TFSTATE_CONTAINER_NAME" {
