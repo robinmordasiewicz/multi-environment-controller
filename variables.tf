@@ -16,6 +16,12 @@ variable "AZURE_REGION" {
   sensitive   = true
 }
 
+variable "AZURE_RESOURCE_GROUP_NAME" {
+  type        = string
+  description = "Azure Resource group used for deployment"
+  sensitive   = true
+}
+
 variable "ARM_TENANT_ID" {
   type        = string
   sensitive   = true
