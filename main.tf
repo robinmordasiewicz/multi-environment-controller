@@ -141,20 +141,19 @@ resource "github_actions_environment_variable" "AZURE_DEPLOYED" {
   value         = each.value.AZURE_DEPLOYED
 }
 
-resource "null_resource" "environments" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  triggers = {
-    environment = github_actions_environment_variable.AZURE_DEPLOYED[each.key].value
-  }
-  provisioner "local-exec" {
-    command = "gh workflow run terraform-action.yml --ref $deployment_environment -R $repository"
-    environment = {
-      deployment_environment = each.key
-      repository             = data.github_repository.repo.full_name
-    }
-  }
-  #  depends_on = [github_branch.environment]
-}
+#resource "null_resource" "environments" {
+#  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+#  triggers = {
+#    environment = github_actions_environment_variable.AZURE_DEPLOYED[each.key].value
+#  }
+#  provisioner "local-exec" {
+#    command = "gh workflow run terraform-action.yml --ref $deployment_environment -R $repository"
+#    environment = {
+#      deployment_environment = each.key
+#      repository             = data.github_repository.repo.full_name
+#    }
+#  }
+#}
 
 #resource "github_branch" "environment" {
 #  for_each   = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
