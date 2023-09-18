@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "AZURE_RESOURCE_GROUP" {
   tags = {
     Username = each.value.OWNER_EMAIL
   }
-  depends_on = [github_repository.repo]
+  depends_on = [data.github_repository.repo]
 }
 
 resource "random_integer" "random_number" {
@@ -52,7 +52,7 @@ module "SERVICE_PRINCIPAL" {
   version          = ">=1.2.0"
   entity_type      = "environment"
   repository_name  = data.github_repository.repo.full_name
-  depends_on       = [github_repository.repo]
+  depends_on       = [data.github_repository.repo]
 }
 
 resource "azurerm_role_assignment" "provisioner" {
