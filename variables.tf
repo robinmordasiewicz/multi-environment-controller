@@ -22,12 +22,6 @@ variable "ARM_TENANT_ID" {
   description = "Used for OIDC authentication"
 }
 
-variable "REPOSITORY_TOKEN" {
-  type        = string
-  sensitive   = true
-  description = "(Required) The github PAT for the repository."
-}
-
 variable "REPOSITORY_NAME" {
   type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
