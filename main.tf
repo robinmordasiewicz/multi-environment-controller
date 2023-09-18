@@ -2,6 +2,10 @@ data "github_repository" "repo" {
   full_name = var.REPOSITORY_NAME
 }
 
+output "github" {
+  value = data.github_repository.repo
+}
+
 resource "azurerm_resource_group" "AZURE_RESOURCE_GROUP" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   name     = "${data.github_repository.repo.name}-${each.key}"
