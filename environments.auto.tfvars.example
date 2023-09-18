@@ -1,20 +1,23 @@
 environments = [
   {
     name            = "Production",
-    SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
+    ARM_SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
     AZURE_DEPLOYED  = "true"
     OWNER_EMAIL     = "user1@example.com"
+    AZURE_REGION    = "canadacentral"
   },
   {
     name            = "Development",
-    SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
+    ARM_SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
     AZURE_DEPLOYED  = "false"
     OWNER_EMAIL     = "user2@example.com"
+    AZURE_REGION    = "canadacentral"
   },
   {
     name            = "Staging",
-    SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
+    ARM_SUBSCRIPTION_ID = "86753098-8675-3098-675309-8675309867"
     AZURE_DEPLOYED  = "false"
     OWNER_EMAIL     = "user3@example.com"
+    AZURE_REGION    = "canadacentral"
   }
 ]
