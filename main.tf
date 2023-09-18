@@ -39,23 +39,23 @@ resource "azurerm_storage_container" "TFSTATE_CONTAINER" {
   storage_account_name = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
 }
 
-resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name     = "${local.REPOSITORY_FULL_NAME_HASH}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
-  #scope       = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-  #scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
-  #scope       = data.azurerm_subscription.current.id
-  scope       = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-  description = "${data.github_repository.repo.full_name} - ${each.key} - Deployment Environment Provisioner Role"
-  permissions {
-    actions     = ["*"]
-    not_actions = []
-  }
-  assignable_scopes = [
-    azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-    #data.azurerm_subscription.current.id
-  ]
-}
+#resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
+#  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+#  name     = "${local.REPOSITORY_FULL_NAME_HASH}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
+#  #scope       = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
+#  #scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+#  #scope       = data.azurerm_subscription.current.id
+#  scope       = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
+#  description = "${data.github_repository.repo.full_name} - ${each.key} - Deployment Environment Provisioner Role"
+#  permissions {
+#    actions     = ["*"]
+#    not_actions = []
+#  }
+#  assignable_scopes = [
+#    azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
+#    #data.azurerm_subscription.current.id
+#  ]
+#}
 
 module "SERVICE_PRINCIPAL" {
   for_each         = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
@@ -70,9 +70,8 @@ module "SERVICE_PRINCIPAL" {
 resource "azurerm_role_assignment" "provisioner" {
   for_each             = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   scope                = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-  role_definition_name = azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE[each.key].name
+  role_definition_name = "multi-environment-controller_deployment-provisioner"
   principal_id         = module.SERVICE_PRINCIPAL[each.key].service_principal.object_id
-  depends_on           = [azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE, module.SERVICE_PRINCIPAL]
 }
 
 resource "github_repository_environment" "repo_environment" {
