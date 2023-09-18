@@ -7,7 +7,7 @@ output "github" {
 }
 
 locals {
-  REPOSITORY_FULL_NAME_HASH = base64encode(data.github_repository.repo.full_name)
+  REPOSITORY_FULL_NAME_HASH = replace(data.github_repository.repo.full_name, "/", "-")
 }
 
 resource "azurerm_resource_group" "AZURE_RESOURCE_GROUP" {
