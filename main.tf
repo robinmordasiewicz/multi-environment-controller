@@ -40,10 +40,10 @@ resource "azurerm_storage_container" "TFSTATE_CONTAINER" {
 }
 
 resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
-  for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name        = "${local.REPOSITORY_FULL_NAME_HASH}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
+  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  name     = "${local.REPOSITORY_FULL_NAME_HASH}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
   #scope       = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-  scope = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
+  scope       = "/subscriptions/${each.value.ARM_SUBSCRIPTION_ID}"
   description = "${data.github_repository.repo.full_name} - ${each.key} - Deployment Environment Provisioner Role"
   permissions {
     actions     = ["*"]

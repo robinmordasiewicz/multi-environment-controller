@@ -1,1 +1,1 @@
-https://www.eliostruyf.com/dispatch-github-action-fine-grained-personal-access-token/
+https://learn.microsoft.com/en-us/azure/role-based-access-control/resource-provider-operations
