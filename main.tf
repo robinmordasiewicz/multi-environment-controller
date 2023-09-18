@@ -6,14 +6,17 @@ output "github" {
   value = data.github_repository.repo
 }
 
+locals {
+  REPOSITORY_FULL_NAME_HASH = base64encode(data.github_repository.repo.full_name)
+}
+
 resource "azurerm_resource_group" "AZURE_RESOURCE_GROUP" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name     = "${data.github_repository.repo.name}-${each.key}"
+  name     = "${local.REPOSITORY_FULL_NAME_HASH}-${each.key}"
   location = each.value.AZURE_REGION
   tags = {
     Username = each.value.OWNER_EMAIL
   }
-  depends_on = [data.github_repository.repo]
 }
 
 resource "random_integer" "random_number" {
@@ -39,9 +42,9 @@ resource "azurerm_storage_container" "TFSTATE_CONTAINER" {
 
 resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
   for_each    = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  name        = "${data.github_repository.repo.name}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
+  name        = "${local.REPOSITORY_FULL_NAME_HASH}-${each.key}-DEPLOYMENT_ENVIRONMENT_PROVISIONER-role"
   scope       = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-  description = "${each.key} - Deployment Environment Provisioner Role"
+  description = "${data.github_repository.repo.full_name} - ${each.key} - Deployment Environment Provisioner Role"
   permissions {
     actions     = ["*"]
     not_actions = []
@@ -51,12 +54,11 @@ resource "azurerm_role_definition" "DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE" {
 module "SERVICE_PRINCIPAL" {
   for_each         = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment_name = each.value.name
-  identity_name    = "${data.github_repository.repo.name}-${each.value.name}"
+  identity_name    = "${local.REPOSITORY_FULL_NAME_HASH}-${each.value.name}"
   source           = "ned1313/github_oidc/azuread"
   version          = ">=1.2.0"
   entity_type      = "environment"
   repository_name  = data.github_repository.repo.full_name
-  depends_on       = [data.github_repository.repo]
 }
 
 resource "azurerm_role_assignment" "provisioner" {
