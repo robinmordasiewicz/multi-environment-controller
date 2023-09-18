@@ -72,6 +72,7 @@ resource "azurerm_role_assignment" "provisioner" {
   scope                = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
   role_definition_name = azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE[each.key].name
   principal_id         = module.SERVICE_PRINCIPAL[each.key].service_principal.object_id
+  depends_on           = [azurerm_role_definition.DEPLOYMENT_ENVIRONMENT_PROVISIONER_ROLE, module.SERVICE_PRINCIPAL]
 }
 
 resource "github_repository_environment" "repo_environment" {
