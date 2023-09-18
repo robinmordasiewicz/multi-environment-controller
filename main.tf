@@ -131,18 +131,18 @@ resource "github_actions_environment_secret" "AZURE_TFSTATE_CONTAINER_NAME" {
   repository      = data.github_repository.repo.name
 }
 
-resource "github_actions_environment_secret" "TF_VAR_OWNER_EMAIL" {
+resource "github_actions_environment_secret" "OWNER_EMAIL" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
-  secret_name     = "TF_VAR_OWNER_EMAIL"
+  secret_name     = "OWNER_EMAIL"
   plaintext_value = each.value.OWNER_EMAIL
   repository      = data.github_repository.repo.name
 }
 
-resource "github_actions_environment_secret" "TF_VAR_AZURE_REGION" {
+resource "github_actions_environment_secret" "AZURE_REGION" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
-  secret_name     = "TF_VAR_AZURE_REGION"
+  secret_name     = "AZURE_REGION"
   plaintext_value = each.value.AZURE_REGION
   repository      = data.github_repository.repo.name
 }
@@ -179,8 +179,8 @@ resource "github_actions_environment_variable" "AZURE_DEPLOYED" {
 #    github_actions_environment_secret.ARM_TENANT_ID,
 #    github_actions_environment_secret.ARM_CLIENT_ID,
 #    github_actions_environment_secret.AZURE_TFSTATE_CONTAINER_NAME,
-#    github_actions_environment_secret.TF_VAR_OWNER_EMAIL,
-#    github_actions_environment_secret.TF_VAR_AZURE_REGION,
+#    github_actions_environment_secret.OWNER_EMAIL,
+#    github_actions_environment_secret.AZURE_REGION,
 #  ]
 #}
 
