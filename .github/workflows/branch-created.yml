@@ -8,4 +8,4 @@ jobs:
       - name: Create Environment and Secrets
         run: |
           echo "Create environment and secrets for ${{ github.event.ref }}"
-          curl -XPOST -u "${{ secrets.GITHUB_OWNER}}:${{secrets.GITHUB_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/controller/APPLICATION_NAME/actions/workflows/build.yaml/dispatches --data '{"ref": "master"}'
+          curl -XPOST -u "${{ secrets.GITHUB_OWNER}}:${{secrets.GITHUB_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/controller/APPLICATION_NAME/actions/workflows/build.yaml/dispatches --data '{"ref": "main"}'
