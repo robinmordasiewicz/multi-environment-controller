@@ -2,10 +2,6 @@ data "github_repository" "repo" {
   full_name = var.REPOSITORY_NAME
 }
 
-output "github" {
-  value = data.github_repository.repo
-}
-
 locals {
   REPOSITORY_FULL_NAME_HASH = replace(data.github_repository.repo.full_name, "/", "-")
 }
