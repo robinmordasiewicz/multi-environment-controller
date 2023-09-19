@@ -1,10 +1,10 @@
 variable "environments" {
   type = list(object({
-    name                = string
-    ARM_SUBSCRIPTION_ID = string
-    AZURE_DEPLOYED      = string
-    AZURE_REGION        = string
-    OWNER_EMAIL         = string
+    name                 = string
+    ARM_SUBSCRIPTION_ID  = string
+    ENVIRONMENT_DEPLOYED = string
+    AZURE_REGION         = string
+    OWNER_EMAIL          = string
   }))
   default     = []
   description = "List of applications that will be used to create github branches and environments"
