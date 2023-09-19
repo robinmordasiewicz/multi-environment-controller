@@ -120,7 +120,7 @@ resource "github_actions_environment_secret" "AZURE_RESOURCE_GROUP_NAME" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment     = github_repository_environment.repo_environment[each.key].environment
   secret_name     = "AZURE_RESOURCE_GROUP_NAME"
-  plaintext_value = azurerm_resource_group.AZURE_RESOURCE_GROUP.name
+  plaintext_value = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].name
   repository      = data.github_repository.repo.name
 }
 
