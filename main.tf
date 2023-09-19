@@ -70,7 +70,7 @@ module "SERVICE_PRINCIPAL" {
 resource "azurerm_role_assignment" "provisioner" {
   for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   #scope                = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
-  scope                = "/subscriptions/${var.ARM_SUBSCRIPTION_ID}"
+  scope                = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
   role_definition_name = "multi-environment-controller_deployment-provisioner"
   principal_id         = module.SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
