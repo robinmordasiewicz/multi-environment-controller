@@ -147,18 +147,18 @@ resource "github_actions_environment_secret" "AZURE_REGION" {
   repository      = data.github_repository.repo.name
 }
 
-resource "github_actions_environment_variable" "AZURE_DEPLOYED" {
+resource "github_actions_environment_variable" "ENVIRONMENT_DEPLOYED" {
   for_each      = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
   environment   = github_repository_environment.repo_environment[each.key].environment
-  variable_name = "AZURE_DEPLOYED"
+  variable_name = "ENVIRONMENT_DEPLOYED"
   repository    = data.github_repository.repo.name
-  value         = each.value.AZURE_DEPLOYED
+  value         = each.value.ENVIRONMENT_DEPLOYED
 }
 
 #resource "null_resource" "environments" {
 #  for_each = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
 #  triggers = {
-#    environment = github_actions_environment_variable.AZURE_DEPLOYED[each.key].value
+#    environment = github_actions_environment_variable.ENVIRONMENT_DEPLOYED[each.key].value
 #  }
 #  provisioner "local-exec" {
 #    command = "gh workflow run terraform-action.yml --ref $deployment_environment -R $repository"
@@ -174,7 +174,7 @@ resource "github_actions_environment_variable" "AZURE_DEPLOYED" {
 #  repository = data.github_repository.repo.name
 #  branch     = each.key
 #  depends_on = [
-#    github_actions_environment_variable.AZURE_DEPLOYED,
+#    github_actions_environment_variable.ENVIRONMENT_DEPLOYED,
 #    github_actions_environment_secret.ARM_SUBSCRIPTION_ID,
 #    github_actions_environment_secret.ARM_TENANT_ID,
 #    github_actions_environment_secret.ARM_CLIENT_ID,
