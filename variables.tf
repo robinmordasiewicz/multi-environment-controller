@@ -1,4 +1,4 @@
-variable "environment" {
+variable "environments" {
   type = list(object({
     name                 = string
     ARM_SUBSCRIPTION_ID  = string
@@ -27,7 +27,12 @@ variable "APPLICATION_REPOSITORY_NAME" {
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
 }
 
-variable "APPLICATION_ENVIRONMENT_OWNER_EMAIL" {
+variable "APPLICATION_OWNER_EMAIL" {
+  type        = string
+  description = "email address for the owner of resources used to tag azure resource groups"
+}
+
+variable "ENVIRONMENT_OWNER_EMAIL" {
   type        = string
   description = "email address for the owner of resources used to tag azure resource groups"
 }
