@@ -1,10 +1,12 @@
 variable "environments" {
   type = list(object({
-    name                 = string
-    ARM_SUBSCRIPTION_ID  = string
-    ENVIRONMENT_DEPLOYED = string
-    AZURE_REGION         = string
-    OWNER_EMAIL          = string
+    APPLICATION_REPOSITORY_FULL_NAME = string
+    ENVIRONMENT_BRANCH_NAME         = string
+    ENVIRONMENT_ARM_SUBSCRIPTION_ID = string
+    ENVIRONMENT_ARM_TENANT_ID       = string
+    ENVIRONMENT_AZURE_REGION        = string
+    ENVIRONMENT_OWNER_EMAIL         = string
+    ENVIRONMENT_DEPLOYED            = string
   }))
   default     = []
   description = "List of applications that will be used to create github branches and environments"
@@ -22,14 +24,9 @@ variable "ENVIRONMENT_ARM_TENANT_ID" {
   description = "Used for OIDC authentication"
 }
 
-variable "APPLICATION_REPOSITORY_NAME" {
+variable "APPLICATION_REPOSITORY_FULL_NAME" {
   type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
-}
-
-variable "APPLICATION_OWNER_EMAIL" {
-  type        = string
-  description = "email address for the owner of resources used to tag azure resource groups"
 }
 
 variable "ENVIRONMENT_OWNER_EMAIL" {
