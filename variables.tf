@@ -1,3 +1,15 @@
+variable "applications" {
+  type = list(object({
+    APPLICATION_REPOSITORY_FULL_NAME = string
+    APPLICATION_REPOSITORY_TOKEN     = string
+    APPLICATION_AZURE_REGION         = string
+    APPLICATION_OWNER_EMAIL          = string
+    APPLICATION_DEPLOYED             = string
+  }))
+  default     = []
+  description = "List of registered applications to a controller"
+
+}
 variable "environments" {
   type = list(object({
     APPLICATION_REPOSITORY_FULL_NAME = string
@@ -9,7 +21,7 @@ variable "environments" {
     ENVIRONMENT_DEPLOYED            = string
   }))
   default     = []
-  description = "List of applications that will be used to create github branches and environments"
+  description = "List of environments that will be created  that will be used to create github branches and environments"
 }
 
 variable "ENVIRONMENT_AZURE_REGION" {
