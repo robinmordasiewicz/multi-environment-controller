@@ -1,4 +1,4 @@
-variable "environments" {
+variable "environment" {
   type = list(object({
     name                 = string
     ARM_SUBSCRIPTION_ID  = string
@@ -10,24 +10,24 @@ variable "environments" {
   description = "List of applications that will be used to create github branches and environments"
 }
 
-variable "AZURE_REGION" {
+variable "ENVIRONMENT_AZURE_REGION" {
   type        = string
   description = "Azure region to use for storage account."
   sensitive   = true
 }
 
-variable "ARM_TENANT_ID" {
+variable "ENVIRONMENT_ARM_TENANT_ID" {
   type        = string
   sensitive   = true
   description = "Used for OIDC authentication"
 }
 
-variable "REPOSITORY_NAME" {
+variable "APPLICATION_REPOSITORY_NAME" {
   type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
 }
 
-variable "OWNER_EMAIL" {
+variable "APPLICATION_ENVIRONMENT_OWNER_EMAIL" {
   type        = string
   description = "email address for the owner of resources used to tag azure resource groups"
 }
