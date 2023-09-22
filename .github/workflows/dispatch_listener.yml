@@ -4,22 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: A greeting message
+        description: Load an Environment
         type: string
         default: ''
-        required: false
+        required: true
 
 jobs:
   say_hello:
+    environment: 
     runs-on: ubuntu-latest
     steps:
       - name: Set merged variables
         run: |
-          echo "ENVIRONMENT=${{ github.event.inputs.environment || github.event.client_payload.environment || env.environment }}" >> $GITHUB_ENV
-          echo "N=${{ github.event.inputs.n || github.event.client_payload.n || env.n }}" >> $GITHUB_ENV
-
+          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
       - name: Print workflow_dispatch inputs
         run: echo "${{ toJson(github.event.inputs) }}"
 
-      - name: Print repository_dispatch inputs
-        run: echo "${{ toJson(github.event.client_payload) }}"
