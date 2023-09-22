@@ -3,9 +3,6 @@ name: Dispatch Listener
 
 on:
   workflow_dispatch:
-    types:
-      - "test run"
-      - "test::*"
 
 jobs:
   say_hello:
