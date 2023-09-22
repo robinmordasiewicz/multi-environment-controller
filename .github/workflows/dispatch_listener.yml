@@ -11,7 +11,6 @@ on:
 
 jobs:
   say_hello:
-    #environment: {{ github.event.inputs.environment }}
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +20,3 @@ jobs:
           echo "${{ vars.CONTROLLER_DEPLOYED }}"
       - name: Print workflow_dispatch inputs
         run: echo "${{ toJson(github.event.inputs) }}"
-
