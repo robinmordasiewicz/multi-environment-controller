@@ -7,8 +7,13 @@ jobs:
   say_hello:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Matrix
-        id: generate-matrix
+      - name: Set merged variables
         run: |
-          ENVIRONMENT='${{ toJSON(github.event.client_payload.environment) }}'
-          echo "${ENVIRONMENT}"
+          echo "ENVIRONMENT=${{ github.event.inputs.environment || github.event.client_payload.environment || env.environment }}" >> $GITHUB_ENV
+          echo "N=${{ github.event.inputs.n || github.event.client_payload.n || env.n }}" >> $GITHUB_ENV
+
+      - name: Print workflow_dispatch inputs
+        run: echo "${{ toJson(github.event.inputs) }}"
+
+      - name: Print repository_dispatch inputs
+        run: echo "${{ toJson(github.event.client_payload) }}"
