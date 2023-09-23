@@ -20,16 +20,17 @@ variable "environments" {
 #  sensitive   = true
 #}
 
-#variable "ENVIRONMENT_ARM_TENANT_ID" {
-#  type        = string
-#  sensitive   = true
-#  description = "Used for OIDC authentication"
-#}
+variable "ENVIRONMENT_ARM_TENANT_ID" {
+  type        = string
+  sensitive   = true
+  description = "Used for OIDC authentication"
+}
 
 variable "APPLICATION_REPOSITORY_FULL_NAME" {
   type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
 }
+
 variable "CONTROLLER_REPOSITORY_FULL_NAME" {
   type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
