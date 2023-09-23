@@ -54,10 +54,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Applications Initialization
-        env:
-          CONTROLLER_APPLICATIONS_BASE64: ${{ secrets.CONTROLLER_APPLICATIONS }}
         run : |
-          CONTROLLER_APPLICATIONS_JSON=$(echo ${CONTROLLER_APPLICATIONS_BASE64} | base64 --decode)
           echo 'environments = [' > environments.auto.tfvars ;
           i=0
           application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
@@ -178,7 +175,7 @@ jobs:
       - name: Github Repository Checkout
         uses: actions/checkout@v3
 
-      - name: Inventory Application Environments
+      - name: Applications Initialization
         run: |
           echo 'environments = [' > environments.auto.tfvars ;
           i=0
