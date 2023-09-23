@@ -1,0 +1,22 @@
+name: Dispatch Listener
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Load an Environment
+        type: string
+        default: ''
+        required: true
+
+jobs:
+  say_hello:
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          echo "${{ vars.CONTROLLER_DEPLOYED }}"
+      - name: Print workflow_dispatch inputs
+        run: echo "${{ toJson(github.event.inputs) }}"
