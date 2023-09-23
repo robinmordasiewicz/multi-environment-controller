@@ -2,6 +2,10 @@ data "github_repository" "APPLICATION_REPOSITORY" {
   full_name = var.APPLICATION_REPOSITORY_FULL_NAME
 }
 
+data "github_repository_environments" "APPLICATION_ENVIRONMENTS" {
+  repository      = data.github_repository.APPLICATION_REPOSITORY.name
+}
+
 data "azurerm_subscription" "current" {
 }
 
@@ -156,19 +160,19 @@ resource "github_actions_environment_variable" "ENVIRONMENT_DEPLOYED" {
   value         = each.value.ENVIRONMENT_DEPLOYED
 }
 
-resource "github_actions_environment_variable" "CONTROLLER_REPOSITORY_FULL_NAME" {
+resource "github_actions_environment_secret" "CONTROLLER_REPOSITORY_FULL_NAME" {
   for_each      = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  environment   = github_repository_environment.repo_environment[each.key].environment
+  environment   = github_repository_environment.ENVIRONMENT_REPOSITORY_BRANCHNAME[each.key].environment
   variable_name = "CONTROLLER_REPOSITORY_FULL_NAME"
-  repository    = data.github_repository.repo.name
+  repository      = data.github_repository.APPLICATION_REPOSITORY.name
   value         = vars.CONTROLLER_REPOSITORY_FULL_NAME
 }
 
-resource "github_actions_environment_variable" "CONTROLLER_REPOSITORY_TOKEN" {
+resource "github_actions_environment_secret" "CONTROLLER_REPOSITORY_TOKEN" {
   for_each      = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
-  environment   = github_repository_environment.repo_environment[each.key].environment
+  environment   = github_repository_environment.ENVIRONMENT_REPOSITORY_BRANCHNAME[each.key].environment
   variable_name = "CONTROLLER_REPOSITORY_TOKEN"
-  repository    = data.github_repository.repo.name
+  repository      = data.github_repository.APPLICATION_REPOSITORY.name
   value         = vars.CONTROLLER_REPOSITORY_TOKEN
 }
 
