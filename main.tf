@@ -18,7 +18,7 @@ resource "azurerm_resource_group" "ENVIRONMENT_AZURE_RESOURCE_GROUP" {
   name     = "${local.APPLICATION_REPOSITORY_FULL_NAME_NO_SLASH}-${each.key}"
   location = each.value.ENVIRONMENT_AZURE_REGION
   tags = {
-    Username = each.value.ENVIRONMENT_AZURE_OWNER_EMAIL
+    Username = each.value.ENVIRONMENT_OWNER_EMAIL
   }
 }
 
@@ -64,7 +64,7 @@ resource "azurerm_storage_container" "ENVIRONMENT_AZURE_TFSTATE_CONTAINER" {
 module "ENVIRONMENT_AZURE_SERVICE_PRINCIPAL" {
   for_each         = { for deployment_environment in var.environments : deployment_environment.APPLICATION_BRANCH_NAME => deployment_environment }
   environment_name = each.value.APPLICATION_BRANCH_NAME
-  identity_name    = "${local.APPLICATION_REPOSITORY_FULL_NAME_NO_SLASH}-${each.value.name}"
+  identity_name    = "${local.APPLICATION_REPOSITORY_FULL_NAME_NO_SLASH}-${each.value.APPLICATION_BRANCH_NAME}"
   source           = "ned1313/github_oidc/azuread"
   version          = ">=1.2.0"
   entity_type      = "environment"
@@ -136,11 +136,11 @@ resource "github_actions_environment_secret" "AZURE_ENVIRONMENT_AZURE_TFSTATE_CO
   repository      = data.github_repository.APPLICATION_REPOSITORY.name
 }
 
-resource "github_actions_environment_secret" "ENVIRONMENT_AZURE_OWNER_EMAIL" {
+resource "github_actions_environment_secret" "ENVIRONMENT_OWNER_EMAIL" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.APPLICATION_BRANCH_NAME => deployment_environment }
   environment     = github_repository_environment.ENVIRONMENT_REPOSITORY_BRANCHNAME[each.key].environment
-  secret_name     = "ENVIRONMENT_AZURE_OWNER_EMAIL"
-  plaintext_value = each.value.ENVIRONMENT_AZURE_OWNER_EMAIL
+  secret_name     = "ENVIRONMENT_OWNER_EMAIL"
+  plaintext_value = each.value.ENVIRONMENT_OWNER_EMAIL
   repository      = data.github_repository.APPLICATION_REPOSITORY.name
 }
 
@@ -200,7 +200,7 @@ resource "null_resource" "environments" {
 #    github_actions_environment_secret.ENVIRONMENT_ARM_TENANT_ID,
 #    github_actions_environment_secret.ENVIRONMENT_ARM_CLIENT_ID,
 #    github_actions_environment_secret.AZURE_ENVIRONMENT_AZURE_TFSTATE_CONTAINER_NAME,
-#    github_actions_environment_secret.ENVIRONMENT_AZURE_OWNER_EMAIL,
+#    github_actions_environment_secret.ENVIRONMENT_OWNER_EMAIL,
 #    github_actions_environment_secret.ENVIRONMENT_AZURE_REGION,
 #  ]
 #}
