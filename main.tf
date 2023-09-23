@@ -63,7 +63,7 @@ resource "azurerm_storage_container" "ENVIRONMENT_AZURE_TFSTATE_CONTAINER" {
 
 module "ENVIRONMENT_AZURE_SERVICE_PRINCIPAL" {
   for_each         = { for deployment_environment in var.environments : deployment_environment.APPLICATION_BRANCH_NAME => deployment_environment }
-  environment_name = each.value.name
+  environment_name = each.value.APPLICATION_BRANCH_NAME
   identity_name    = "${local.APPLICATION_REPOSITORY_FULL_NAME_NO_SLASH}-${each.value.name}"
   source           = "ned1313/github_oidc/azuread"
   version          = ">=1.2.0"
