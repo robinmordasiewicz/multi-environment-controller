@@ -1,7 +1,7 @@
 variable "environments" {
   type = list(object({
     APPLICATION_REPOSITORY_FULL_NAME = string
-    ENVIRONMENT_BRANCH_NAME          = string
+    APPLICATION_BRANCH_NAME          = string
     ENVIRONMENT_ARM_SUBSCRIPTION_ID  = string
     ENVIRONMENT_ARM_TENANT_ID        = string
     ENVIRONMENT_AZURE_REGION         = string
