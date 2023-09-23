@@ -5,6 +5,8 @@ variable "environments" {
     ENVIRONMENT_DEPLOYED = string
     AZURE_REGION         = string
     OWNER_EMAIL          = string
+    CONTROLLER_REPOSITORY_FULL_NAME = string
+    CONTROLLER_REPOSITORY_TOKEN = string
   }))
   default     = []
   description = "List of applications that will be used to create github branches and environments"
