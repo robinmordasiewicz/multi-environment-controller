@@ -153,7 +153,7 @@ resource "github_actions_environment_secret" "ENVIRONMENT_AZURE_REGION" {
 }
 
 resource "github_actions_environment_secret" "CONTROLLER_REPOSITORY_FULL_NAME" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.APPLICATION_REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.APPLICATION_REPOSITORY_BRANCH[each.key].environment
   secret_name     = "CONTROLLER_REPOSITORY_FULL_NAME"
   repository      = data.github_repository.APPLICATION_REPOSITORY.name
@@ -161,7 +161,7 @@ resource "github_actions_environment_secret" "CONTROLLER_REPOSITORY_FULL_NAME" {
 }
 
 resource "github_actions_environment_secret" "CONTROLLER_REPOSITORY_TOKEN" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.name => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.APPLICATION_REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.APPLICATION_REPOSITORY_BRANCH[each.key].environment
   secret_name     = "CONTROLLER_REPOSITORY_TOKEN"
   repository      = data.github_repository.APPLICATION_REPOSITORY.name
