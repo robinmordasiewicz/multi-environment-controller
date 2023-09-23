@@ -26,12 +26,21 @@ variable "environments" {
 #  description = "Used for OIDC authentication"
 #}
 
-#variable "APPLICATION_REPOSITORY_FULL_NAME" {
-#  type        = string
-#  description = "(Required) The name of the repository we're using in the form (org | user)/repo"
-#}
+variable "APPLICATION_REPOSITORY_FULL_NAME" {
+  type        = string
+  description = "(Required) The name of the repository we're using in the form (org | user)/repo"
+}
+variable "CONTROLLER_REPOSITORY_FULL_NAME" {
+  type        = string
+  description = "(Required) The name of the repository we're using in the form (org | user)/repo"
+}
 
 #variable "ENVIRONMENT_OWNER_EMAIL" {
 #  type        = string
 #  description = "email address for the owner of resources used to tag azure resource groups"
 #}
+
+variable "CONTROLLER_REPOSITORY_TOKEN" {
+  type        = string
+  description = "(Required) The actions token of the controller repository"
+}
