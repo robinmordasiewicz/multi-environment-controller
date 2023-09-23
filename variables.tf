@@ -14,24 +14,24 @@ variable "environments" {
   description = "List of environments that will be created  that will be used to create github branches and environments"
 }
 
-variable "ENVIRONMENT_AZURE_REGION" {
-  type        = string
-  description = "Azure region to use for storage account."
-  sensitive   = true
-}
+#variable "ENVIRONMENT_AZURE_REGION" {
+#  type        = string
+#  description = "Azure region to use for storage account."
+#  sensitive   = true
+#}
 
-variable "ENVIRONMENT_ARM_TENANT_ID" {
-  type        = string
-  sensitive   = true
-  description = "Used for OIDC authentication"
-}
+#variable "ENVIRONMENT_ARM_TENANT_ID" {
+#  type        = string
+#  sensitive   = true
+#  description = "Used for OIDC authentication"
+#}
 
-variable "APPLICATION_REPOSITORY_FULL_NAME" {
-  type        = string
-  description = "(Required) The name of the repository we're using in the form (org | user)/repo"
-}
+#variable "APPLICATION_REPOSITORY_FULL_NAME" {
+#  type        = string
+#  description = "(Required) The name of the repository we're using in the form (org | user)/repo"
+#}
 
-variable "ENVIRONMENT_OWNER_EMAIL" {
-  type        = string
-  description = "email address for the owner of resources used to tag azure resource groups"
-}
+#variable "ENVIRONMENT_OWNER_EMAIL" {
+#  type        = string
+#  description = "email address for the owner of resources used to tag azure resource groups"
+#}
