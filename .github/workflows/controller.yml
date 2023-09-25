@@ -22,7 +22,8 @@ jobs:
 
     steps:
       - name: GitHub Repository Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+          sparse-checkout: 'controller'
 
       - name: Controllers Initialization
         run : |
@@ -138,13 +139,14 @@ jobs:
 
     steps:
       - name: Github Repository Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+          sparse-checkout: 'controller'
 
       - name: Controllers Initialization
         run : |
-          echo 'controllers = [' > applications.auto.tfvars ;
+          echo 'applications = [' > applications.auto.tfvars ;
           j=0
-          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' applications.json)
+          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.CONTROLLER_APPLICATIONS }} )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
