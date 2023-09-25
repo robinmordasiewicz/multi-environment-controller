@@ -31,7 +31,7 @@ jobs:
         run : |
           echo 'applications = [' > applications.auto.tfvars ;
           j=0
-          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.CONTROLLER_APPLICATIONS }} )
+          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.APPLICATIONS }} )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
@@ -74,7 +74,7 @@ jobs:
       - name: terraform init
         id: init
         env:
-          TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.TFSTATE_RESOURCE_GROUP_NAME }}
+          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
           TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
           TFSTATE_CONTAINER_NAME: ${{ secrets.TFSTATE_CONTAINER_NAME }}
           TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
@@ -82,7 +82,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform plan
         id: tf-plan
@@ -149,7 +149,7 @@ jobs:
         run : |
           echo 'applications = [' > applications.auto.tfvars ;
           j=0
-          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.CONTROLLER_APPLICATIONS }} )
+          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.APPLICATIONS }} )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
@@ -157,10 +157,10 @@ jobs:
             j=$((j+1))
             echo "  {" >> applications.auto.tfvars
             echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
+            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
             echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> applications.auto.tfvars
             echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> applications.auto.tfvars
             echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> applications.auto.tfvars
-            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
             echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> applications.auto.tfvars
             if [[ "${j}" != "${#APPLICATIONS[@]}" ]];then
@@ -185,7 +185,7 @@ jobs:
       - name: terraform init
         id: init
         env:
-          TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.TFSTATE_RESOURCE_GROUP_NAME }}
+          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
           TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
           TFSTATE_CONTAINER_NAME: ${{ secrets.TFSTATE_CONTAINER_NAME }}
           TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
@@ -193,7 +193,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v3
