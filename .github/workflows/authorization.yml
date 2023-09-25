@@ -52,6 +52,7 @@ jobs:
     steps:
       - name: GitHub Repository Checkout
         uses: actions/checkout@v4
+        with:
           sparse-checkout: 'application'
 
       - name: Applications Initialization
@@ -175,6 +176,7 @@ jobs:
     steps:
       - name: Github Repository Checkout
         uses: actions/checkout@v4
+        with:
           sparse-checkout: 'application'
 
       - name: Applications Initialization
