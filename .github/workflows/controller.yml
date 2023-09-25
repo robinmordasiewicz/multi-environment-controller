@@ -5,6 +5,7 @@ concurrency:
   group: ${{ github.workflow }}
 
 on:
+  workflow_dispatch:
 
 permissions:
   id-token: write
