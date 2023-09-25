@@ -26,11 +26,11 @@ jobs:
       action: ${{ steps.terraform.outputs.action }}
     steps:
       - id: terraform
-        name: "Application deployed is: ${{ vars.APPLICATION_DEPLOYED }}"
+        name: "Application deployed is: ${{ vars.DEPLOYED }}"
         shell: bash
         run: |
           env
-          if [[ "${{ vars.APPLICATION_DEPLOYED }}" == "true" ]]
+          if [[ "${{ vars.DEPLOYED }}" == "true" ]]
           then
             echo 'action=apply' >> ${GITHUB_OUTPUT}
           else
@@ -59,18 +59,18 @@ jobs:
         run : |
           echo 'environments = [' > environments.auto.tfvars ;
           i=0
-          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
+          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
           for branch in "${application_branches[@]}"
           do
             i=$((i+1))
             echo '  {' >> environments.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
-            echo "    ENVIRONMENT_ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_DEPLOYED             = \"true\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
+            echo "    REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"${{ secrets.ARM_TENANT_ID }}\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    AZURE_REGION         = \"${{ secrets.AZURE_REGION }}\"" >> environments.auto.tfvars
+            echo "    OWNER_EMAIL          = \"${{ secrets.OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_TOKEN      = \"${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}\"" >> environments.auto.tfvars
             if [[ "${i}" != "${#application_branches[@]}" ]];then
@@ -103,22 +103,22 @@ jobs:
           CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME }}
           CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME }}
           CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME }}
-          APPLICATION_AZURE_TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          AZURE_TFSTATE_KEY: ${{ secrets.REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${APPLICATION_AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform plan
         id: tf-plan
         env:
-          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
-          TF_VAR_APPLICATION_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
-          TF_VAR_ENVIRONMENT_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
-          TF_VAR_ENVIRONMENT_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
-          TF_VAR_ENVIRONMENT_ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
-          TF_VAR_ENVIRONMENT_ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
+          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.REPOSITORY_FULL_NAME }}
+          TF_VAR_AZURE_REGION: ${{ secrets.AZURE_REGION }}
+          TF_VAR_OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
+          TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
           TF_VAR_CONTROLLER_REPOSITORY_TOKEN: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
@@ -183,18 +183,18 @@ jobs:
         run: |
           echo 'environments = [' > environments.auto.tfvars ;
           i=0
-          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
+          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
           for branch in "${application_branches[@]}"
           do
             i=$((i+1))
             echo '  {' >> environments.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
-            echo "    ENVIRONMENT_ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_DEPLOYED             = \"true\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
-            echo "    ENVIRONMENT_OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
+            echo "    REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"${{ secrets.ARM_TENANT_ID }}\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    AZURE_REGION         = \"${{ secrets.AZURE_REGION }}\"" >> environments.auto.tfvars
+            echo "    OWNER_EMAIL          = \"${{ secrets.OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_TOKEN      = \"${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}\"" >> environments.auto.tfvars
             if [[ "${i}" != "${#application_branches[@]}" ]];then
@@ -222,7 +222,7 @@ jobs:
           CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME }}
           CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME }}
           CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME }}
-          CONTROLLER_AZURE_TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          CONTROLLER_AZURE_TFSTATE_KEY: ${{ secrets.REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
@@ -236,7 +236,7 @@ jobs:
 
       - name: terraform apply
         env:
-          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
@@ -247,8 +247,8 @@ jobs:
 #        env:
 #          GITHUB_TOKEN:  ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
 #        run: |
-#          gh secret set CONTROLLER_REPOSITORY_TOKEN --body "${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}" --repo ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
-#          gh secret set CONTROLLER_REPOSITORY_FULL_NAME --body "${{ github.repository }}" --repo ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+#          gh secret set CONTROLLER_REPOSITORY_TOKEN --body "${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}" --repo ${{ secrets.REPOSITORY_FULL_NAME }}
+#          gh secret set CONTROLLER_REPOSITORY_FULL_NAME --body "${{ github.repository }}" --repo ${{ secrets.REPOSITORY_FULL_NAME }}
 
   destroy:
     name: 'Terraform Destroy'
@@ -278,22 +278,22 @@ jobs:
           CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME }}
           CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME }}
           CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME }}
-          APPLICATION_AZURE_TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          AZURE_TFSTATE_KEY: ${{ secrets.REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${APPLICATION_AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform destroy
         id: destroy
         env:
-          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
-          TF_VAR_APPLICATION_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
-          TF_VAR_ENVIRONMENT_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
-          TF_VAR_ENVIRONMENT_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
-          TF_VAR_ENVIRONMENT_ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
-          TF_VAR_ENVIRONMENT_ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
+          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.REPOSITORY_FULL_NAME }}
+          TF_VAR_AZURE_REGION: ${{ secrets.AZURE_REGION }}
+          TF_VAR_OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
+          TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
           TF_VAR_CONTROLLER_REPOSITORY_TOKEN: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
@@ -307,5 +307,5 @@ jobs:
 #        env:
 #          GITHUB_TOKEN:  ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
 #        run: |
-#          gh secret delete CONTROLLER_REPOSITORY_TOKEN --repo ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }} || true
-#          gh secret delete CONTROLLER_REPOSITORY_FULL_NAME --repo ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }} || true
+#          gh secret delete CONTROLLER_REPOSITORY_TOKEN --repo ${{ secrets.REPOSITORY_FULL_NAME }} || true
+#          gh secret delete CONTROLLER_REPOSITORY_FULL_NAME --repo ${{ secrets.REPOSITORY_FULL_NAME }} || true
