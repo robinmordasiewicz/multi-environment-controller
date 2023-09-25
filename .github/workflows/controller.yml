@@ -29,31 +29,31 @@ jobs:
 
       - name: Controllers Initialization
         run : |
-          echo 'applications = [' > applications.auto.tfvars ;
+          echo 'applications = [' > terraform.auto.tfvars ;
           j=0
-          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.APPLICATIONS }} )
+          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< "${{ secrets.APPLICATIONS }}" )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
             }
             j=$((j+1))
-            echo "  {" >> applications.auto.tfvars
-            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
-            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> applications.auto.tfvars
-            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> applications.auto.tfvars
-            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> applications.auto.tfvars
-            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
-            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
-            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> applications.auto.tfvars
+            echo "  {" >> terraform.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> terraform.auto.tfvars
+            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> terraform.auto.tfvars
+            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> terraform.auto.tfvars
+            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> terraform.auto.tfvars
+            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> terraform.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> terraform.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> terraform.auto.tfvars
             if [[ "${j}" != "${#APPLICATIONS[@]}" ]];then
-              echo '  },' >> applications.auto.tfvars
+              echo '  },' >> terraform.auto.tfvars
             else
-              echo '  }' >> applications.auto.tfvars
+              echo '  }' >> terraform.auto.tfvars
             fi
           done
-          echo ']' >> applications.auto.tfvars
+          echo ']' >> terraform.auto.tfvars
           ls -al
-          cat applications.auto.tfvars
+          cat terraform.auto.tfvars
 
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
@@ -147,29 +147,29 @@ jobs:
 
       - name: Controllers Initialization
         run : |
-          echo 'applications = [' > applications.auto.tfvars ;
+          echo 'applications = [' > terraform.auto.tfvars ;
           j=0
-          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< ${{ secrets.APPLICATIONS }} )
+          for APPLICATIONS in $(jq -r '.[].APPLICATIONS[] | @base64' <<< "${{ secrets.APPLICATIONS }}" )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
             }
             j=$((j+1))
-            echo "  {" >> applications.auto.tfvars
-            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
-            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
-            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> applications.auto.tfvars
-            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> applications.auto.tfvars
-            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> applications.auto.tfvars
-            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
-            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> applications.auto.tfvars
+            echo "  {" >> terraform.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> terraform.auto.tfvars
+            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> terraform.auto.tfvars
+            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> terraform.auto.tfvars
+            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> terraform.auto.tfvars
+            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> terraform.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> terraform.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> terraform.auto.tfvars
             if [[ "${j}" != "${#APPLICATIONS[@]}" ]];then
-              echo '  },' >> applications.auto.tfvars
+              echo '  },' >> terraform.auto.tfvars
             else
-              echo '  }' >> applications.auto.tfvars
+              echo '  }' >> terraform.auto.tfvars
             fi
           done
-          echo ']' >> applications.auto.tfvars
+          echo ']' >> terraform.auto.tfvars
 
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
