@@ -2,10 +2,6 @@ data "github_repository" "APPLICATION_REPOSITORY" {
   full_name = var.APPLICATION_REPOSITORY_FULL_NAME
 }
 
-#data "github_repository_environments" "APPLICATION_ENVIRONMENTS" {
-#  repository = data.github_repository.APPLICATION_REPOSITORY.name
-#}
-
 data "azurerm_subscription" "current" {
 }
 
