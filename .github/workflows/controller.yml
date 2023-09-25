@@ -35,13 +35,13 @@ jobs:
             }
             j=$((j+1))
             echo "  {" >> applications.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_FULL_NAME = \"$(_jq_application '.APPLICATION_REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_DEPLOYED             = \"$(_jq_application '.APPLICATION_DEPLOYED')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_AZURE_REGION         = \"$(_jq_application '.APPLICATION_AZURE_REGION')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_OWNER_EMAIL          = \"$(_jq_application '.APPLICATION_OWNER_EMAIL')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_TOKEN     = \"$(_jq_application '.APPLICATION_REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.APPLICATION_ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_ARM_TENANT_ID        = \"$(_jq_application '.APPLICATION_ARM_TENANT_ID')\"" >> applications.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
+            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> applications.auto.tfvars
+            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> applications.auto.tfvars
+            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> applications.auto.tfvars
+            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> applications.auto.tfvars
             if [[ "${j}" != "${#APPLICATIONS[@]}" ]];then
               echo '  },' >> applications.auto.tfvars
             else
@@ -151,13 +151,13 @@ jobs:
             }
             j=$((j+1))
             echo "  {" >> applications.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_FULL_NAME = \"$(_jq_application '.APPLICATION_REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_DEPLOYED             = \"$(_jq_application '.APPLICATION_DEPLOYED')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_AZURE_REGION         = \"$(_jq_application '.APPLICATION_AZURE_REGION')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_OWNER_EMAIL          = \"$(_jq_application '.APPLICATION_OWNER_EMAIL')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_REPOSITORY_TOKEN     = \"$(_jq_application '.APPLICATION_REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.APPLICATION_ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
-            echo "    APPLICATION_ARM_TENANT_ID        = \"$(_jq_application '.APPLICATION_ARM_TENANT_ID')\"" >> applications.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> applications.auto.tfvars
+            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> applications.auto.tfvars
+            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> applications.auto.tfvars
+            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> applications.auto.tfvars
+            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> applications.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> applications.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> applications.auto.tfvars
             if [[ "${j}" != "${#APPLICATIONS[@]}" ]];then
               echo '  },' >> applications.auto.tfvars
             else
