@@ -76,7 +76,7 @@ jobs:
           AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
           TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
           TFSTATE_CONTAINER_NAME: ${{ secrets.TFSTATE_CONTAINER_NAME }}
-          TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
+          TFSTATE_KEY: main
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -189,7 +189,7 @@ jobs:
           AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
           TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
           TFSTATE_CONTAINER_NAME: ${{ secrets.TFSTATE_CONTAINER_NAME }}
-          TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
+          TFSTATE_KEY: main
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
