@@ -58,6 +58,14 @@ resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
   principal_id         = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
 
+data "azuread_client_config" "current" {}
+
+resource "azuread_application" "example" {
+#  for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  display_name     = "example"
+  owners           = [data.azuread_client_config.current.object_id]
+}
+
 resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
   for_each    = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   environment = base64encode(each.key)
