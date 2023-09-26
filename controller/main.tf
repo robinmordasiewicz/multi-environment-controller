@@ -54,7 +54,7 @@ module "AZURE_SERVICE_PRINCIPAL" {
 resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
   for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   #scope                = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
-  scope              = data.azurerm_subscription.subscription.id
+  scope              = data.azurerm_subscription.subscription[each.key].id
   role_definition_name = "ADMINISTRATOR_ROLE"
   principal_id         = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
