@@ -31,7 +31,7 @@ jobs:
           echo 'applications = [' > terraform.auto.tfvars ;
           j=0
           APPS=$(echo ${{ secrets.APPLICATIONS }} | base64 --decode)
-          for APPLICATIONS in $(jq -r '. | @base64' <<< "${APPS}" )
+          for APPLICATIONS in $(jq -r '.[] | @base64' <<< "${APPS}" )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
@@ -152,7 +152,7 @@ jobs:
           echo 'applications = [' > terraform.auto.tfvars ;
           j=0
           APPS=$(echo ${{ secrets.APPLICATIONS }} | base64 --decode)
-          for APPLICATIONS in $(jq -r '. | @base64' <<< "${APPS}" )
+          for APPLICATIONS in $(jq -r '.[] | @base64' <<< "${APPS}" )
           do
             _jq_application() {
               echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
