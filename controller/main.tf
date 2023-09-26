@@ -61,7 +61,7 @@ resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
 resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
   for_each    = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   environment = base64encode(each.key)
-  repository  = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository  = data.github_repository.CONTROLLER_REPOSITORY.name
   depends_on = [
     azurerm_role_assignment.ROLE_ASSIGNMENT
   ]
@@ -72,7 +72,7 @@ resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
   secret_name     = "ARM_SUBSCRIPTION_ID"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = each.value.ARM_SUBSCRIPTION_ID
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "ARM_TENANT_ID" {
@@ -80,7 +80,7 @@ resource "github_actions_environment_secret" "ARM_TENANT_ID" {
   secret_name     = "ARM_TENANT_ID"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = each.value.ARM_TENANT_ID
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
@@ -88,7 +88,7 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   secret_name     = "ARM_CLIENT_ID"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.application_id
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "TFSTATE_STORAGE_ACCOUNT_NAME" {
@@ -96,7 +96,7 @@ resource "github_actions_environment_secret" "TFSTATE_STORAGE_ACCOUNT_NAME" {
   secret_name     = "TFSTATE_STORAGE_ACCOUNT_NAME"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "TFSTATE_RESOURCE_GROUP_NAME" {
@@ -104,7 +104,7 @@ resource "github_actions_environment_secret" "TFSTATE_RESOURCE_GROUP_NAME" {
   secret_name     = "TFSTATE_RESOURCE_GROUP_NAME"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].name
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "TFSTATE_CONTAINER_NAME" {
@@ -112,7 +112,7 @@ resource "github_actions_environment_secret" "TFSTATE_CONTAINER_NAME" {
   secret_name     = "TFSTATE_CONTAINER_NAME"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = azurerm_storage_container.AZURE_TFSTATE_CONTAINER[each.key].name
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "OWNER_EMAIL" {
@@ -120,7 +120,7 @@ resource "github_actions_environment_secret" "OWNER_EMAIL" {
   secret_name     = "OWNER_EMAIL"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = each.value.OWNER_EMAIL
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "AZURE_REGION" {
@@ -128,14 +128,14 @@ resource "github_actions_environment_secret" "AZURE_REGION" {
   secret_name     = "AZURE_REGION"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
   plaintext_value = each.value.AZURE_REGION
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
 resource "github_actions_environment_secret" "REPOSITORY_FULL_NAME" {
   for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   secret_name     = "REPOSITORY_FULL_NAME"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
   plaintext_value = each.value.REPOSITORY_FULL_NAME
 }
 
@@ -143,7 +143,7 @@ resource "github_actions_environment_secret" "REPOSITORY_TOKEN" {
   for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   secret_name     = "REPOSITORY_TOKEN"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  repository      = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
   plaintext_value = each.value.REPOSITORY_TOKEN
 }
 
@@ -151,7 +151,7 @@ resource "github_actions_environment_variable" "DEPLOYED" {
   for_each      = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   variable_name = "DEPLOYED"
   environment   = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  repository    = data.github_repository.CONTROLLER_REPOSITORY[each.key].name
+  repository    = data.github_repository.CONTROLLER_REPOSITORY.name
   value         = each.value.DEPLOYED
 }
 
