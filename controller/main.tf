@@ -53,16 +53,22 @@ module "AZURE_SERVICE_PRINCIPAL" {
 
 resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
   for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  scope                = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
+  #scope                = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
+  scope              = data.azurerm_subscription.subscription.id
   role_definition_name = "ADMINISTRATOR_ROLE"
   principal_id         = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
 
 data "azuread_client_config" "current" {}
 
-resource "azuread_application" "example" {
-#  for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  display_name     = "example"
+data "azurerm_subscription" "subscription" {
+  for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  subscription_id = each.value.ARM_SUBSCRIPTION_ID
+}
+
+resource "azuread_application" "AZURE_APP" {
+  for_each         = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  display_name     = replace(data.github_repository.REPOSITORY[each.value].full_name, "/", "-")
   owners           = [data.azuread_client_config.current.object_id]
 }
 
