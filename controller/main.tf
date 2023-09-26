@@ -66,12 +66,6 @@ data "azurerm_subscription" "subscription" {
   subscription_id = each.value.ARM_SUBSCRIPTION_ID
 }
 
-resource "azuread_application" "AZURE_APP" {
-  for_each         = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  display_name     = replace(data.github_repository.REPOSITORY[each.key].full_name, "/", "-")
-  owners           = [data.azuread_client_config.current.object_id]
-}
-
 resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
   for_each    = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   environment = base64encode(each.key)
