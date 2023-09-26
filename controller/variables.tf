@@ -1,4 +1,4 @@
-variable "controllers" {
+variable "applications" {
   type = list(object({
     REPOSITORY_FULL_NAME = string
     REPOSITORY_TOKEN     = string
