@@ -24,11 +24,10 @@ jobs:
     steps:
       - name: GitHub Repository Checkout
         uses: actions/checkout@v4
-        with:
-          sparse-checkout: 'controller'
 
       - name: Controllers Initialization
         run : |
+          mv controller/*.tf ./
           echo 'applications = [' > terraform.auto.tfvars ;
           j=0
           for APPLICATIONS in $(jq -r '.[] | @base64' <<< "${{ secrets.APPLICATIONS }}" )
@@ -148,6 +147,7 @@ jobs:
 
       - name: Controllers Initialization
         run : |
+          mv controller/*.tf ./
           echo 'applications = [' > terraform.auto.tfvars ;
           j=0
           for APPLICATIONS in $(jq -r '.[] | @base64' <<< "${{ secrets.APPLICATIONS }}" )
