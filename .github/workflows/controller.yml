@@ -12,8 +12,29 @@ permissions:
   contents: read
 
 jobs:
+  terraform:
+    name: 'Terraform Init'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.application }}
+    outputs:
+      action: ${{ steps.terraform.outputs.action }}
+    steps:
+      - id: terraform
+        name: "Application deployed is: ${{ vars.DEPLOYED }}"
+        shell: bash
+        run: |
+          env
+          if [[ "${{ vars.DEPLOYED }}" == "true" ]]
+          then
+            echo 'action=apply' >> ${GITHUB_OUTPUT}
+          else
+            echo 'action=destroy' >> ${GITHUB_OUTPUT}
+          fi
+
   terraform-plan:
     name: 'Terraform Plan'
+    needs: [terraform]
+    if: needs.terraform.outputs.action == 'apply'
     runs-on: ubuntu-latest
     env:
       # this is needed since we are running terraform with read-only permissions
@@ -135,8 +156,8 @@ jobs:
 
   terraform-apply:
     name: 'Terraform Apply'
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
-    needs: [terraform-plan]
+    needs: [terraform, terraform-plan]
+    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2 && needs.terraform.outputs.action == 'apply'
     runs-on: ubuntu-latest
 
     steps:
@@ -211,3 +232,77 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_USE_OIDC: true
         run: terraform apply -auto-approve tfplan
+
+  destroy:
+    name: 'Terraform Destroy'
+    needs: [terraform]
+    if: needs.terraform.outputs.action == 'destroy'
+    environment: ${{ github.event.inputs.application }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github Repository Checkout
+        uses: actions/checkout@v4
+
+      - name: Controllers Initialization
+        run : |
+          mv controller/*.tf ./
+          echo 'applications = [' > terraform.auto.tfvars ;
+          j=0
+          APPS=$(echo ${{ secrets.APPLICATIONS }} | base64 --decode)
+          for APPLICATIONS in $(jq -r '.[] | @base64' <<< "${APPS}" )
+          do
+            _jq_application() {
+              echo ${APPLICATIONS} | base64 --decode | jq -r ${1}
+            }
+            j=$((j+1))
+            echo "  {" >> terraform.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"$(_jq_application '.REPOSITORY_FULL_NAME')\"" >> terraform.auto.tfvars
+            echo "    DEPLOYED             = \"$(_jq_application '.DEPLOYED')\"" >> terraform.auto.tfvars
+            echo "    AZURE_REGION         = \"$(_jq_application '.AZURE_REGION')\"" >> terraform.auto.tfvars
+            echo "    OWNER_EMAIL          = \"$(_jq_application '.OWNER_EMAIL')\"" >> terraform.auto.tfvars
+            echo "    REPOSITORY_TOKEN     = \"$(_jq_application '.REPOSITORY_TOKEN')\"" >> terraform.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"$(_jq_application '.ARM_SUBSCRIPTION_ID')\"" >> terraform.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"$(_jq_application '.ARM_TENANT_ID')\"" >> terraform.auto.tfvars
+            if [[ "${j}" != "${#APPLICATIONS[@]}" ]];then
+              echo '  },' >> terraform.auto.tfvars
+            else
+              echo '  }' >> terraform.auto.tfvars
+            fi
+          done
+          echo ']' >> terraform.auto.tfvars
+          ls -al
+          cat terraform.auto.tfvars
+
+      - name: Microsoft Azure Authentication
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: Hashicorp Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: terraform init
+        id: init
+        env:
+          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.TFSTATE_CONTAINER_NAME }}
+          TFSTATE_KEY: main
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_USE_OIDC: true
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+
+      - name: terraform destroy
+        id: destroy
+        env:
+          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_USE_OIDC: true
