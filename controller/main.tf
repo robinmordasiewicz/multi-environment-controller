@@ -68,7 +68,7 @@ data "azurerm_subscription" "subscription" {
 
 resource "azuread_application" "AZURE_APP" {
   for_each         = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  display_name     = replace(data.github_repository.REPOSITORY[each.value].full_name, "/", "-")
+  display_name     = replace(data.github_repository.REPOSITORY[each.key].full_name, "/", "-")
   owners           = [data.azuread_client_config.current.object_id]
 }
 
