@@ -147,7 +147,7 @@ resource "github_actions_environment_secret" "REPOSITORY_TOKEN" {
   plaintext_value = each.value.REPOSITORY_TOKEN
 }
 
-resource "github_actions_variable" "DEPLOYED" {
+resource "github_actions_environment_variable" "DEPLOYED" {
   for_each      = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   variable_name = "DEPLOYED"
   environment   = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
@@ -158,7 +158,7 @@ resource "github_actions_variable" "DEPLOYED" {
 #resource "null_resource" "environments" {
 #  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
 #  triggers = {
-#    environment = github_actions_variable.DEPLOYED[each.key].value
+#    environment = github_actions_environment_variable.DEPLOYED[each.key].value
 #  }
 #  provisioner "local-exec" {
 #    command = "gh workflow run authorization.yml -R $repository -f application=$repository"
