@@ -7,7 +7,6 @@ variable "applications" {
     AZURE_REGION         = string
     OWNER_EMAIL          = string
     DEPLOYED             = string
-    APPLICATIONS         = string
   }))
   default     = []
   description = "List of controllers that the registry will authorize"
