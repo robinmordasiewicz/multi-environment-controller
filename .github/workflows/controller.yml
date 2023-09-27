@@ -15,7 +15,6 @@ jobs:
   terraform:
     name: 'Terraform Init'
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.application }}
     outputs:
       action: ${{ steps.terraform.outputs.action }}
     steps:
@@ -237,7 +236,6 @@ jobs:
     name: 'Terraform Destroy'
     needs: [terraform]
     if: needs.terraform.outputs.action == 'destroy'
-    environment: ${{ github.event.inputs.application }}
     runs-on: ubuntu-latest
     steps:
       - name: Github Repository Checkout
@@ -270,8 +268,6 @@ jobs:
             fi
           done
           echo ']' >> terraform.auto.tfvars
-          ls -al
-          cat terraform.auto.tfvars
 
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
