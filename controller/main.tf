@@ -17,6 +17,11 @@ resource "azurerm_resource_group" "TFSTATE_RESOURCE_GROUP" {
   tags = {
     Username = each.value.OWNER_EMAIL
   }
+  lifecycle {
+    ignore_changes = [
+      tags["CreatedOnDate"]
+    ]
+  }
 }
 
 resource "random_integer" "random_number" {
