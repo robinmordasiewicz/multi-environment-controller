@@ -78,7 +78,7 @@ resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
   #scope                = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
   scope                = data.azurerm_subscription.subscription[each.key].id
   role_definition_name = "ADMINISTRATOR_ROLE"
-  principal_id         = azuread_application.AZURE_SERVICE_PRINCIPAL[each.key].object_id
+  principal_id         = azuread_service_principal.AZURE_SERVICE_PRINCIPAL[each.key].object_id
 }
 
 data "azuread_client_config" "current" {}
