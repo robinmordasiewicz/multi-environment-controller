@@ -69,7 +69,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> environments.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
@@ -114,17 +114,17 @@ jobs:
       - name: terraform plan
         id: tf-plan
         env:
-          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
-          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.REPOSITORY_FULL_NAME }}
-          TF_VAR_AZURE_REGION: ${{ secrets.AZURE_REGION }}
-          TF_VAR_OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
-          TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          TF_VAR_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
+          TF_VAR_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
+          TF_VAR_ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
+          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
           TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
           TF_VAR_CONTROLLER_REPOSITORY_TOKEN: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
         run: |
           export exitcode=0
@@ -194,7 +194,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> environments.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
@@ -210,9 +210,9 @@ jobs:
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
         with:
-          subscription-id: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          client-id: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           allow-no-subscriptions: true
 
       - name: Hashicorp Terraform
@@ -238,10 +238,10 @@ jobs:
 
       - name: terraform apply
         env:
-          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
         run: terraform apply -auto-approve tfplan
 
@@ -294,9 +294,9 @@ jobs:
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
         with:
-          subscription-id: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          client-id: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           allow-no-subscriptions: true
 
       - name: Hashicorp Terraform
@@ -320,17 +320,17 @@ jobs:
       - name: terraform destroy
         id: destroy
         env:
-          GITHUB_TOKEN:  ${{ secrets.REPOSITORY_TOKEN }}
-          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.REPOSITORY_FULL_NAME }}
-          TF_VAR_AZURE_REGION: ${{ secrets.AZURE_REGION }}
-          TF_VAR_OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
-          TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          TF_VAR_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
+          TF_VAR_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
+          TF_VAR_ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
+          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
           TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
           TF_VAR_CONTROLLER_REPOSITORY_TOKEN: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
         run: |
           terraform destroy -auto-approve
