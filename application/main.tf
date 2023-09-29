@@ -146,6 +146,12 @@ resource "github_actions_environment_secret" "REPOSITORY_TOKEN" {
   plaintext_value = var.CONTROLLER_REPOSITORY_TOKEN
 }
 
+resource "github_actions_secret" "CONTROLLER_REPOSITORY_FULL_NAME" {
+  secret_name     = "CONTROLLER_REPOSITORY_FULL_NAME"
+  repository      = data.github_repository.REPOSITORY.name
+  plaintext_value = var.CONTROLLER_REPOSITORY_FULL_NAME
+}
+
 resource "github_actions_environment_variable" "DEPLOYED" {
   for_each      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment   = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
