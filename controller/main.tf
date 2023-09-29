@@ -117,7 +117,7 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   secret_name     = "ARM_CLIENT_ID"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = azuread_application.AZURE_SERVICE_PRINCIPAL[each.key].application_id
+  plaintext_value = azuread_service_principal.AZURE_SERVICE_PRINCIPAL[each.key].application_id
   repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
