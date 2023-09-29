@@ -26,11 +26,11 @@ jobs:
       action: ${{ steps.terraform.outputs.action }}
     steps:
       - id: terraform
-        name: "Application deployed is: ${{ vars.DEPLOYED }}"
+        name: "Application deployed is: ${{ vars.APPLICATION_DEPLOYED }}"
         shell: bash
         run: |
           env
-          if [[ "${{ vars.DEPLOYED }}" == "true" ]]
+          if [[ "${{ vars.APPLICATION_DEPLOYED }}" == "true" ]]
           then
             echo 'action=apply' >> ${GITHUB_OUTPUT}
           else
@@ -57,20 +57,21 @@ jobs:
 
       - name: Applications Initialization
         run : |
+          mv application/*.tf ./
           echo 'environments = [' > environments.auto.tfvars ;
           i=0
-          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
+          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
           for branch in "${application_branches[@]}"
           do
             i=$((i+1))
             echo '  {' >> environments.auto.tfvars
             echo "    REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
-            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
-            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
-            echo "    ARM_TENANT_ID        = \"${{ secrets.ARM_TENANT_ID }}\"" >> environments.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
             echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
-            echo "    AZURE_REGION         = \"${{ secrets.AZURE_REGION }}\"" >> environments.auto.tfvars
-            echo "    OWNER_EMAIL          = \"${{ secrets.OWNER_EMAIL }}\"" >> environments.auto.tfvars
+            echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
+            echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_TOKEN      = \"${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}\"" >> environments.auto.tfvars
             if [[ "${i}" != "${#application_branches[@]}" ]];then
@@ -180,21 +181,22 @@ jobs:
           sparse-checkout: 'application'
 
       - name: Applications Initialization
-        run: |
+        run : |
+          mv application/*.tf ./
           echo 'environments = [' > environments.auto.tfvars ;
           i=0
-          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
+          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
           for branch in "${application_branches[@]}"
           do
             i=$((i+1))
             echo '  {' >> environments.auto.tfvars
             echo "    REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
-            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
-            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
-            echo "    ARM_TENANT_ID        = \"${{ secrets.ARM_TENANT_ID }}\"" >> environments.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
             echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
-            echo "    AZURE_REGION         = \"${{ secrets.AZURE_REGION }}\"" >> environments.auto.tfvars
-            echo "    OWNER_EMAIL          = \"${{ secrets.OWNER_EMAIL }}\"" >> environments.auto.tfvars
+            echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
+            echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_TOKEN      = \"${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}\"" >> environments.auto.tfvars
             if [[ "${i}" != "${#application_branches[@]}" ]];then
@@ -259,6 +261,35 @@ jobs:
     steps:
       - name: Github Repository Checkout
         uses: actions/checkout@v3
+        with:
+          sparse-checkout: 'application'
+
+      - name: Applications Initialization
+        run : |
+          mv application/*.tf ./
+          echo 'environments = [' > environments.auto.tfvars ;
+          i=0
+          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
+          for branch in "${application_branches[@]}"
+          do
+            i=$((i+1))
+            echo '  {' >> environments.auto.tfvars
+            echo "    REPOSITORY_BRANCH    = \"${branch}\"," >> environments.auto.tfvars
+            echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
+            echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
+            echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
+            echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
+            echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
+            echo "    CONTROLLER_REPOSITORY_TOKEN      = \"${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}\"" >> environments.auto.tfvars
+            if [[ "${i}" != "${#application_branches[@]}" ]];then
+              echo '  },' >> environments.auto.tfvars
+            else
+              echo '  }' >> environments.auto.tfvars
+            fi
+          done
+          echo ']' >> environments.auto.tfvars
 
       - name: Microsoft Azure Authentication
         uses: azure/login@v1

@@ -47,6 +47,8 @@ jobs:
     steps:
       - name: GitHub Repository Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: 'controller'
 
       - name: Controllers Initialization
         run : |
@@ -168,7 +170,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: 'controller'
-          path: '.'
 
       - name: Controllers Initialization
         run : |
@@ -245,6 +246,8 @@ jobs:
     steps:
       - name: Github Repository Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: 'controller'
 
       - name: Controllers Initialization
         run : |
