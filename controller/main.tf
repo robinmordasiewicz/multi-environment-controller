@@ -93,6 +93,16 @@ data "azurerm_subscription" "subscription" {
   subscription_id = each.value.ARM_SUBSCRIPTION_ID
 }
 
+resource "azuread_application_federated_identity_credential" "AZURE_FEDERATED_IDENTITY" {
+  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  application_object_id = azuread_application.AZURE_APPLICATION[each.key].object_id
+  display_name          = azuread_application.AZURE_APPLICATION[each.key].display_name
+  description           = "GitHub OIDC for ${data.github_repository.REPOSITORY[each.key].full_name}."
+  audiences             = ["api://AzureADTokenExchange"]
+  issuer                = "https://token.actions.githubusercontent.com"
+  subject               = "repo:${data.github_repository.REPOSITORY[each.key].full_name}:ref:refs/heads/main"
+}
+
 resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
   for_each    = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   environment = base64encode(each.key)
@@ -197,7 +207,6 @@ resource "null_resource" "environments" {
     ARM_TENANT_ID                = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value
     ARM_CLIENT_ID                = github_actions_environment_secret.ARM_CLIENT_ID[each.key].plaintext_value
     TFSTATE_STORAGE_ACCOUNT_NAME = github_actions_environment_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
-    AZURE_RESOURCE_GROUP_NAME    = github_actions_environment_secret.AZURE_RESOURCE_GROUP_NAME[each.key].plaintext_value
     TFSTATE_CONTAINER_NAME       = github_actions_environment_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
     OWNER_EMAIL                  = github_actions_environment_secret.OWNER_EMAIL[each.key].plaintext_value
     AZURE_REGION                 = github_actions_environment_secret.AZURE_REGION[each.key].plaintext_value
