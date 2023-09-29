@@ -1,5 +1,5 @@
 ---
-name: 'Application Authorization and Provisioning'
+name: 'Application Authorization'
 
 concurrency:
   group: ${{ github.workflow }}
@@ -115,6 +115,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_USE_OIDC: true
+          TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
         run: |
           export exitcode=0
           terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -233,6 +234,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_USE_OIDC: true
+          TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
         run: terraform apply -auto-approve tfplan
 
   destroy:
@@ -305,6 +307,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_USE_OIDC: true
+          TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
         run: |
           terraform destroy -auto-approve
 
