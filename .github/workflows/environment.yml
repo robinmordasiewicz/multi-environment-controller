@@ -33,11 +33,16 @@ jobs:
         shell: bash
         run: |
           env
-          if [[ "${{ vars.APPLICATION_DEPLOYED }}" == "true" ]]
+          if [[ ! -z "${{ vars.APPLICATION_DEPLOYED }}" ]]
           then
-            echo 'action=apply' >> ${GITHUB_OUTPUT}
+            if [[ "${{ vars.APPLICATION_DEPLOYED }}" == "true" ]]
+            then
+              echo 'action=apply' >> ${GITHUB_OUTPUT}
+            else
+              echo 'action=destroy' >> ${GITHUB_OUTPUT}
+            fi
           else
-            echo 'action=destroy' >> ${GITHUB_OUTPUT}
+            echo 'action=skip' >> ${GITHUB_OUTPUT}
           fi
   
   terraform-plan:
