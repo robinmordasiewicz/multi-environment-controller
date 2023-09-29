@@ -11,3 +11,7 @@ variable "applications" {
   default     = []
   description = "List of controllers that the registry will authorize"
 }
+
+variable "CONTROLLER_REPOSITORY_FULL_NAME" {
+  type = string
+}
