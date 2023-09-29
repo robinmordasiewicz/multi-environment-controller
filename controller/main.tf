@@ -100,7 +100,7 @@ resource "azuread_application_federated_identity_credential" "AZURE_FEDERATED_ID
   description           = "GitHub OIDC for ${data.github_repository.REPOSITORY[each.key].full_name}."
   audiences             = ["api://AzureADTokenExchange"]
   issuer                = "https://token.actions.githubusercontent.com"
-  subject               = "repo:${data.github_repository.REPOSITORY[each.key].full_name}:environment:${github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment}"
+  subject               = "repo:${data.github_repository.CONTROLLER_REPOSITORY[each.key].full_name}:environment:${github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment}"
 }
 
 resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
