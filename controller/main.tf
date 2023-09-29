@@ -190,19 +190,27 @@ resource "github_actions_environment_variable" "DEPLOYED" {
   value         = each.value.DEPLOYED
 }
 
-#resource "null_resource" "environments" {
-#  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-#  triggers = {
-#    environment = github_actions_environment_variable.DEPLOYED[each.key].value
-#  }
-#  provisioner "local-exec" {
-#    command = "gh workflow run authorization.yml -R $repository -f application=$repository"
-#    environment = {
-#      repository = each.key
-#       application = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-#       #repository    = data.github_repository.REPOSITORY[each.key].name
-#      #repository = data.github_repository.REPOSITORY[each.key].full_name
-#    }
-#  }
-#}
+resource "null_resource" "environments" {
+  for_each      = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  triggers = {
+    ARM_SUBSCRIPTION_ID          = github_actions_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
+    ARM_TENANT_ID                = github_actions_secret.ARM_TENANT_ID[each.key].plaintext_value
+    ARM_CLIENT_ID                = github_actions_secret.ARM_CLIENT_ID[each.key].plaintext_value
+    TFSTATE_STORAGE_ACCOUNT_NAME = github_actions_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
+    AZURE_RESOURCE_GROUP_NAME    = github_actions_secret.AZURE_RESOURCE_GROUP_NAME[each.key].plaintext_value
+    TFSTATE_CONTAINER_NAME       = github_actions_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
+    OWNER_EMAIL                  = github_actions_secret.OWNER_EMAIL[each.key].plaintext_value
+    AZURE_REGION                 = github_actions_secret.AZURE_REGION[each.key].plaintext_value
+    REPOSITORY_FULL_NAME         = github_actions_secret.REPOSITORY_FULL_NAME[each.key].plaintext_value
+    REPOSITORY_TOKEN             = github_actions_secret.REPOSITORY_TOKEN[each.key].plaintext_value
+    DEPLOYED                     = github_actions_variable.DEPLOYED[each.key].value
+    FEDERATED_ID_CREDENTIALS     = azuread_application_federated_identity_credential.AZURE_FEDERATED_IDENTITY[each.key].subject
+  }
+  provisioner "local-exec" {
+    command = "gh workflow run environment.yml -F application=${application}"
+    environment = {
+      application = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
+    }
+  }
+}
 
