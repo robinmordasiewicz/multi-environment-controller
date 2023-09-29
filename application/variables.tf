@@ -52,3 +52,6 @@ variable "CONTROLLER_REPOSITORY_TOKEN" {
   description = "(Required) The actions token of the controller repository"
 }
 
+variable "DEPLOYMENT_PROVISIONER_ROLE_NAME" {
+  type = string
+}

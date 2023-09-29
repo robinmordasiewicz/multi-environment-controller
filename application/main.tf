@@ -53,7 +53,7 @@ resource "azurerm_role_assignment" "AZURE_PROVISIONER_ROLE_ASSIGNMENT" {
   for_each = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   #scope                = azurerm_resource_group.AZURE_RESOURCE_GROUP[each.key].id
   scope                = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
-  role_definition_name = "multi-environment-controller_deployment-provisioner"
+  role_definition_name = var.DEPLOYMENT_PROVISIONER_ROLE_NAME
   principal_id         = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
 }
 
