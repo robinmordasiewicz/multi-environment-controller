@@ -143,7 +143,7 @@ resource "github_actions_environment_secret" "REPOSITORY_TOKEN" {
   environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
   secret_name     = "REPOSITORY_TOKEN"
   repository      = data.github_repository.REPOSITORY.name
-  plaintext_value = var.REPOSITORY_TOKEN
+  plaintext_value = var.CONTROLLER_REPOSITORY_TOKEN
 }
 
 resource "github_actions_environment_variable" "DEPLOYED" {
