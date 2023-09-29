@@ -85,9 +85,9 @@ jobs:
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
         with:
-          subscription-id: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          client-id: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           allow-no-subscriptions: true
 
       - name: HashiCorp Terraform
@@ -101,15 +101,15 @@ jobs:
       - name: terraform init
         id: init
         env:
-          CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME }}
-          CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME }}
-          AZURE_TFSTATE_KEY: ${{ secrets.REPOSITORY_FULL_NAME }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          RESOURCE_GROUP_NAME: ${{ secrets.APPLICATION_TFSTATE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.APPLICATION_TFSTATE_CONTAINER_NAME }}
+          TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform plan
         id: tf-plan
@@ -221,15 +221,15 @@ jobs:
       - name: terraform init
         id: init
         env:
-          CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME }}
-          CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME }}
-          CONTROLLER_AZURE_TFSTATE_KEY: ${{ secrets.REPOSITORY_FULL_NAME }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          RESOURCE_GROUP_NAME: ${{ secrets.APPLICATION_TFSTATE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.APPLICATION_TFSTATE_CONTAINER_NAME }}
+          TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${CONTROLLER_AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v3
@@ -307,15 +307,15 @@ jobs:
       - name: terraform init
         id: init
         env:
-          CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME }}
-          CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME }}
-          AZURE_TFSTATE_KEY: ${{ secrets.REPOSITORY_FULL_NAME }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          RESOURCE_GROUP_NAME: ${{ secrets.APPLICATION_TFSTATE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.APPLICATION_TFSTATE_CONTAINER_NAME }}
+          TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.APPLICATION_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_AZURE_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_AZURE_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_TFSTATE_RESOURCE_GROUP_NAME}" -backend-config="key=${AZURE_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform destroy
         id: destroy
