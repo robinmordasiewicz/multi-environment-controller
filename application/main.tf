@@ -174,7 +174,7 @@ resource "null_resource" "environments" {
     REPOSITORY_FULL_NAME         = github_actions_environment_secret.REPOSITORY_FULL_NAME[each.key].plaintext_value
     REPOSITORY_TOKEN             = github_actions_environment_secret.REPOSITORY_TOKEN[each.key].plaintext_value
     DEPLOYED                     = github_actions_environment_variable.DEPLOYED[each.key].value
-    FEDERATED_ID_CREDENTIALS     = azuread_application_federated_identity_credential.AZURE_FEDERATED_IDENTITY[each.key].subject
+    principal_id                 = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
   }
   provisioner "local-exec" {
     command = "gh workflow run terraform-action.yml --ref $deployment_environment -R $repository"
