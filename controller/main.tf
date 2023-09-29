@@ -67,25 +67,11 @@ resource "azuread_application" "AZURE_APPLICATION" {
   }
 }
 
-resource "azuread_application_federated_identity_credential" "AZURE_FEDERATED_IDENTITY" {
-  for_each              = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  application_object_id = azuread_application.AZURE_APPLICATION[each.key].object_id
-  display_name          = azuread_application.AZURE_APPLICATION[each.key].display_name
-  description           = "GitHub OIDC for ${data.github_repository.REPOSITORY[each.key].full_name}."
-  audiences             = ["api://AzureADTokenExchange"]
-  issuer                = "https://token.actions.githubusercontent.com"
-  subject               = "repo:${data.github_repository.REPOSITORY[each.key].full_name}:environment:${github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment}"
-}
-
-data "azuread_client_config" "current" {}
-
 resource "azuread_service_principal" "AZURE_SERVICE_PRINCIPAL" {
   for_each       = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   application_id = azuread_application.AZURE_APPLICATION[each.key].application_id
   owners         = [data.azuread_client_config.current.object_id]
 }
-
-#resource "null_resource" "admin_consent" {
 
 resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
   for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
