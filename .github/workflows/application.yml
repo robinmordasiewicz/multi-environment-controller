@@ -77,8 +77,6 @@ jobs:
             fi
           done
           echo ']' >> terraform.auto.tfvars
-          ls -al
-          cat terraform.auto.tfvars
 
       - name: Microsoft Azure Authentication
         uses: azure/login@v1
@@ -107,7 +105,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${CONTROLLER_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform plan
         id: tf-plan
@@ -221,7 +219,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${CONTROLLER_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v3
@@ -300,7 +298,7 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${CONTROLLER_TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${CONTROLLER_AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${CONTROLLER_TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
 
       - name: terraform destroy
         id: destroy
