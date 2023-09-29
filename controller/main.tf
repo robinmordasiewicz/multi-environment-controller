@@ -94,7 +94,7 @@ data "azurerm_subscription" "subscription" {
 }
 
 resource "azuread_application_federated_identity_credential" "AZURE_FEDERATED_IDENTITY" {
-  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  for_each              = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   application_object_id = azuread_application.AZURE_APPLICATION[each.key].object_id
   display_name          = azuread_application.AZURE_APPLICATION[each.key].display_name
   description           = "GitHub OIDC for ${data.github_repository.REPOSITORY[each.key].full_name}."
@@ -201,7 +201,7 @@ resource "github_actions_environment_variable" "DEPLOYED" {
 }
 
 resource "null_resource" "environments" {
-  for_each      = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   triggers = {
     ARM_SUBSCRIPTION_ID          = github_actions_environment_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
     ARM_TENANT_ID                = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value

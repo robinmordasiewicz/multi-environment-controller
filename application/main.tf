@@ -163,7 +163,18 @@ resource "github_actions_environment_variable" "DEPLOYED" {
 resource "null_resource" "environments" {
   for_each = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   triggers = {
-    environment = github_actions_environment_variable.DEPLOYED[each.key].value
+    ARM_SUBSCRIPTION_ID          = github_actions_environment_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
+    ARM_TENANT_ID                = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value
+    ARM_CLIENT_ID                = github_actions_environment_secret.ARM_CLIENT_ID[each.key].plaintext_value
+    TFSTATE_STORAGE_ACCOUNT_NAME = github_actions_environment_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
+    AZURE_RESOURCE_GROUP_NAME    = github_actions_environment_secret.AZURE_RESOURCE_GROUP_NAME[each.key].plaintext_value
+    TFSTATE_CONTAINER_NAME       = github_actions_environment_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
+    OWNER_EMAIL                  = github_actions_environment_secret.OWNER_EMAIL[each.key].plaintext_value
+    AZURE_REGION                 = github_actions_environment_secret.AZURE_REGION[each.key].plaintext_value
+    REPOSITORY_FULL_NAME         = github_actions_environment_secret.REPOSITORY_FULL_NAME[each.key].plaintext_value
+    REPOSITORY_TOKEN             = github_actions_environment_secret.REPOSITORY_TOKEN[each.key].plaintext_value
+    DEPLOYED                     = github_actions_environment_variable.DEPLOYED[each.key].value
+    FEDERATED_ID_CREDENTIALS     = azuread_application_federated_identity_credential.AZURE_FEDERATED_IDENTITY[each.key].subject
   }
   provisioner "local-exec" {
     command = "gh workflow run terraform-action.yml --ref $deployment_environment -R $repository"
