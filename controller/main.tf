@@ -78,7 +78,7 @@ resource "azurerm_role_assignment" "ROLE_ASSIGNMENT" {
   #scope                = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].id
   scope                = data.azurerm_subscription.subscription[each.key].id
   role_definition_name = "ADMINISTRATOR_ROLE"
-  principal_id         = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
+  principal_id         = azuread_application.AZURE_SERVICE_PRINCIPAL[each.key].object_id
 }
 
 data "azuread_client_config" "current" {}
@@ -117,7 +117,7 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   secret_name     = "ARM_CLIENT_ID"
   environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.application_id
+  plaintext_value = azuread_application.AZURE_SERVICE_PRINCIPAL[each.key].application_id
   repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
