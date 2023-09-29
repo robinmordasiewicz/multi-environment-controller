@@ -217,9 +217,6 @@ resource "null_resource" "environments" {
   }
   provisioner "local-exec" {
     command = "gh workflow run environment.yml -F application=${github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment}"
-   # environment = {
-   #   application = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-   # }
   }
 }
 
