@@ -1,5 +1,5 @@
 ---
-name: 'Controller Authorization and Provisioning'
+name: 'Application Authorization and Provisioning'
 
 concurrency:
   group: ${{ github.workflow }}
