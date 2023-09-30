@@ -112,21 +112,21 @@ resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
   ]
 }
 
-resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
-  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  secret_name     = "APPLICATION_ARM_SUBSCRIPTION_ID"
-  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = each.value.ARM_SUBSCRIPTION_ID
-  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
-}
+#resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
+#  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  secret_name     = "APPLICATION_ARM_SUBSCRIPTION_ID"
+#  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
+#  plaintext_value = each.value.ARM_SUBSCRIPTION_ID
+#  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
+#}
 
-resource "github_actions_environment_secret" "ARM_TENANT_ID" {
-  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  secret_name     = "APPLICATION_ARM_TENANT_ID"
-  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = each.value.ARM_TENANT_ID
-  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
-}
+#resource "github_actions_environment_secret" "ARM_TENANT_ID" {
+#  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  secret_name     = "APPLICATION_ARM_TENANT_ID"
+#  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
+#  plaintext_value = each.value.ARM_TENANT_ID
+#  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
+#}
 
 resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
@@ -203,8 +203,8 @@ resource "github_actions_environment_variable" "DEPLOYED" {
 resource "null_resource" "environments" {
   for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   triggers = {
-    ARM_SUBSCRIPTION_ID          = github_actions_environment_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
-    ARM_TENANT_ID                = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value
+ #   ARM_SUBSCRIPTION_ID          = github_actions_environment_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
+ #   ARM_TENANT_ID                = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value
     ARM_CLIENT_ID                = github_actions_environment_secret.ARM_CLIENT_ID[each.key].plaintext_value
  #   TFSTATE_STORAGE_ACCOUNT_NAME = github_actions_environment_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
  #   TFSTATE_CONTAINER_NAME       = github_actions_environment_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
