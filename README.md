@@ -6,4 +6,6 @@ This repo will create deployment environment specific objects including Service 
 
 A Github access token will be used by a workflow in this environment, to create deployment secrets in an environment in the project gtihub repo.
 
-1. Create an access token from your github account.
+1. Create an access token from a Github account.
+
+
