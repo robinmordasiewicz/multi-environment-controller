@@ -77,7 +77,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> environments.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
@@ -203,7 +203,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> environments.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
@@ -287,7 +287,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> environments.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}\"" >> environments.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.APPLICATION_ARM_TENANT_ID }}\"" >> environments.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> environments.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> environments.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> environments.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> environments.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> environments.auto.tfvars
