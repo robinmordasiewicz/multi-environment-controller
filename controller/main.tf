@@ -24,11 +24,11 @@ data "azurerm_subscription" "current" {
 #  }
 #}
 
-resource "random_integer" "random_number" {
-  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  min      = 10000
-  max      = 99999
-}
+#resource "random_integer" "random_number" {
+#  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  min      = 10000
+#  max      = 99999
+#}
 
 #resource "azurerm_storage_account" "TFSTATE_STORAGE_ACCOUNT" {
 #  for_each                 = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
