@@ -1,5 +1,5 @@
 ---
-name: 'Environment Authorization'
+name: 'Application Authorization'
 
 concurrency:
   group: ${{ github.workflow }}
@@ -109,9 +109,9 @@ jobs:
       - name: terraform init
         id: init
         env:
-          RESOURCE_GROUP_NAME: ${{ secrets.APPLICATION_TFSTATE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.APPLICATION_TFSTATE_CONTAINER_NAME }}
+          RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_TFSTATE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTAINER_TFSTATE_CONTAINER_NAME }}
           TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
@@ -230,9 +230,9 @@ jobs:
       - name: terraform init
         id: init
         env:
-          RESOURCE_GROUP_NAME: ${{ secrets.APPLICATION_TFSTATE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.APPLICATION_TFSTATE_CONTAINER_NAME }}
+          RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_TFSTATE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}
           TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
@@ -316,9 +316,9 @@ jobs:
       - name: terraform init
         id: init
         env:
-          RESOURCE_GROUP_NAME: ${{ secrets.APPLICATION_TFSTATE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.APPLICATION_TFSTATE_CONTAINER_NAME }}
+          RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_TFSTATE_RESOURCE_GROUP_NAME }}
+          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
+          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}
           TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.APPLICATION_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
@@ -344,10 +344,3 @@ jobs:
           ARM_USE_OIDC: true
         run: |
           terraform destroy -auto-approve
-
-#      - name: Token Authentication
-#        env:
-#          GITHUB_TOKEN:  ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
-#        run: |
-#          gh secret delete CONTROLLER_REPOSITORY_TOKEN --repo ${{ secrets.REPOSITORY_FULL_NAME }} || true
-#          gh secret delete CONTROLLER_REPOSITORY_FULL_NAME --repo ${{ secrets.REPOSITORY_FULL_NAME }} || true
