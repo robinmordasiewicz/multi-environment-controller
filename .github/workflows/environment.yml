@@ -6,8 +6,8 @@ concurrency:
 
 on:
   push:
-    path:
-      application/*.tf
+    paths:
+      - application/*.tf
   workflow_dispatch:
     inputs:
       application:
