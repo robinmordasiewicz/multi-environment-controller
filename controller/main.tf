@@ -10,19 +10,19 @@ data "github_repository" "CONTROLLER_REPOSITORY" {
 data "azurerm_subscription" "current" {
 }
 
-resource "azurerm_resource_group" "TFSTATE_RESOURCE_GROUP" {
-  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  name     = replace(data.github_repository.REPOSITORY[each.key].full_name, "/", "-")
-  location = each.value.AZURE_REGION
-  tags = {
-    Username = each.value.OWNER_EMAIL
-  }
-  lifecycle {
-    ignore_changes = [
-      tags["CreatedOnDate"]
-    ]
-  }
-}
+#resource "azurerm_resource_group" "TFSTATE_RESOURCE_GROUP" {
+#  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  name     = replace(data.github_repository.REPOSITORY[each.key].full_name, "/", "-")
+#  location = each.value.AZURE_REGION
+#  tags = {
+#    Username = each.value.OWNER_EMAIL
+#  }
+#  lifecycle {
+#    ignore_changes = [
+#      tags["CreatedOnDate"]
+#    ]
+#  }
+#}
 
 resource "random_integer" "random_number" {
   for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
@@ -30,20 +30,20 @@ resource "random_integer" "random_number" {
   max      = 99999
 }
 
-resource "azurerm_storage_account" "TFSTATE_STORAGE_ACCOUNT" {
-  for_each                 = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  resource_group_name      = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].name
-  location                 = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].location
-  name                     = "${random_integer.random_number[each.key].result}${substr(lower(replace(each.key, "/\\W|_|\\s/", "")), 0, 19)}"
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
+#resource "azurerm_storage_account" "TFSTATE_STORAGE_ACCOUNT" {
+#  for_each                 = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  resource_group_name      = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].name
+#  location                 = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].location
+#  name                     = "${random_integer.random_number[each.key].result}${substr(lower(replace(each.key, "/\\W|_|\\s/", "")), 0, 19)}"
+#  account_tier             = "Standard"
+#  account_replication_type = "LRS"
+#}
 
-resource "azurerm_storage_container" "AZURE_TFSTATE_CONTAINER" {
-  for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  name                 = lower(replace(each.key, "/\\W|_|\\s/", ""))
-  storage_account_name = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
-}
+#resource "azurerm_storage_container" "AZURE_TFSTATE_CONTAINER" {
+#  for_each             = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  name                 = lower(replace(each.key, "/\\W|_|\\s/", ""))
+#  storage_account_name = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
+#}
 
 data "azuread_application_published_app_ids" "well_known" {}
 
@@ -206,8 +206,8 @@ resource "null_resource" "environments" {
     ARM_SUBSCRIPTION_ID          = github_actions_environment_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
     ARM_TENANT_ID                = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value
     ARM_CLIENT_ID                = github_actions_environment_secret.ARM_CLIENT_ID[each.key].plaintext_value
-    TFSTATE_STORAGE_ACCOUNT_NAME = github_actions_environment_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
-    TFSTATE_CONTAINER_NAME       = github_actions_environment_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
+ #   TFSTATE_STORAGE_ACCOUNT_NAME = github_actions_environment_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
+ #   TFSTATE_CONTAINER_NAME       = github_actions_environment_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
     OWNER_EMAIL                  = github_actions_environment_secret.OWNER_EMAIL[each.key].plaintext_value
     AZURE_REGION                 = github_actions_environment_secret.AZURE_REGION[each.key].plaintext_value
     REPOSITORY_FULL_NAME         = github_actions_environment_secret.REPOSITORY_FULL_NAME[each.key].plaintext_value
