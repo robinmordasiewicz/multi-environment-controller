@@ -1,5 +1,5 @@
 ---
-name: 'Application Authorization'
+name: 'Controller Init'
 
 concurrency:
   group: ${{ github.workflow }}
