@@ -175,7 +175,7 @@ resource "null_resource" "environments" {
     principal_id                    = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
   }
   provisioner "local-exec" {
-    command = "gh workflow run terraform-action.yml --ref ${each.key} -R ${data.github_repository.REPOSITORY.full_name}"
+    command = "gh workflow run environment.yml --ref ${each.key} -R ${data.github_repository.REPOSITORY.full_name}"
   }
 }
 
