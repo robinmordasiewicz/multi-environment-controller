@@ -138,7 +138,7 @@ resource "github_actions_environment_secret" "AZURE_REGION" {
 #  plaintext_value = var.REPOSITORY_FULL_NAME
 #}
 
-resource "github_actions_environment_secret" "CONTROLLER_REPOSITORY_TOKEN" {
+resource "github_actions_secret" "CONTROLLER_REPOSITORY_TOKEN" {
   secret_name     = "CONTROLLER_REPOSITORY_TOKEN"
   repository      = data.github_repository.REPOSITORY.name
   plaintext_value = var.CONTROLLER_REPOSITORY_TOKEN
