@@ -136,29 +136,29 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   repository      = data.github_repository.CONTROLLER_REPOSITORY.name
 }
 
-resource "github_actions_environment_secret" "TFSTATE_STORAGE_ACCOUNT_NAME" {
-  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  secret_name     = "APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME"
-  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
-  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
-}
+#resource "github_actions_environment_secret" "TFSTATE_STORAGE_ACCOUNT_NAME" {
+#  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  secret_name     = "APPLICATION_TFSTATE_STORAGE_ACCOUNT_NAME"
+#  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
+#  plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
+#  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
+#}
 
-resource "github_actions_environment_secret" "TFSTATE_RESOURCE_GROUP_NAME" {
-  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  secret_name     = "APPLICATION_TFSTATE_RESOURCE_GROUP_NAME"
-  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].name
-  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
-}
+#resource "github_actions_environment_secret" "TFSTATE_RESOURCE_GROUP_NAME" {
+#  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  secret_name     = "APPLICATION_TFSTATE_RESOURCE_GROUP_NAME"
+#  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
+#  plaintext_value = azurerm_resource_group.TFSTATE_RESOURCE_GROUP[each.key].name
+#  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
+#}
 
-resource "github_actions_environment_secret" "TFSTATE_CONTAINER_NAME" {
-  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
-  secret_name     = "APPLICATION_TFSTATE_CONTAINER_NAME"
-  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
-  plaintext_value = azurerm_storage_container.AZURE_TFSTATE_CONTAINER[each.key].name
-  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
-}
+#resource "github_actions_environment_secret" "TFSTATE_CONTAINER_NAME" {
+#  for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
+#  secret_name     = "APPLICATION_TFSTATE_CONTAINER_NAME"
+#  environment     = github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment
+#  plaintext_value = azurerm_storage_container.AZURE_TFSTATE_CONTAINER[each.key].name
+#  repository      = data.github_repository.CONTROLLER_REPOSITORY.name
+#}
 
 resource "github_actions_environment_secret" "OWNER_EMAIL" {
   for_each        = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
