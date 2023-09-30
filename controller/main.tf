@@ -216,7 +216,7 @@ resource "null_resource" "environments" {
     FEDERATED_ID_CREDENTIALS     = azuread_application_federated_identity_credential.AZURE_FEDERATED_IDENTITY[each.key].subject
   }
   provisioner "local-exec" {
-    command = "gh workflow run environment.yml -F application=${github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment}"
+    command = "gh workflow run application.yml -F application=${github_repository_environment.REPOSITORY_FULL_NAME[each.key].environment}"
   }
 }
 
