@@ -7,8 +7,8 @@ data "github_repository" "CONTROLLER_REPOSITORY" {
   full_name = var.CONTROLLER_REPOSITORY_FULL_NAME
 }
 
-data "azurerm_subscription" "current" {
-}
+#data "azurerm_subscription" "current" {
+#}
 
 #resource "azurerm_resource_group" "TFSTATE_RESOURCE_GROUP" {
 #  for_each = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
