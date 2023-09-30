@@ -5,9 +5,6 @@ concurrency:
   group: ${{ github.workflow }}
 
 on:
-  push:
-    paths:
-      - application/*.tf
   workflow_dispatch:
     inputs:
       application:
