@@ -107,9 +107,9 @@ resource "github_repository_environment" "REPOSITORY_FULL_NAME" {
   for_each    = { for application in var.applications : application.REPOSITORY_FULL_NAME => application }
   environment = base64encode(each.key)
   repository  = data.github_repository.CONTROLLER_REPOSITORY.name
-  depends_on = [
-    azurerm_role_assignment.ROLE_ASSIGNMENT
-  ]
+#  depends_on = [
+#    azurerm_role_assignment.ROLE_ASSIGNMENT
+#  ]
 }
 
 #resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
