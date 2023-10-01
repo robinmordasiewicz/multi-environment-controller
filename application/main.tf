@@ -70,7 +70,7 @@ resource "github_actions_environment_secret" "ARM_SUBSCRIPTION_ID" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
   secret_name     = "ARM_SUBSCRIPTION_ID"
-  plaintext_value = each.value.ARM_SUBSCRIPTION_ID
+  plaintext_value = var.ARM_SUBSCRIPTION_ID
   repository      = data.github_repository.REPOSITORY.name
 }
 
