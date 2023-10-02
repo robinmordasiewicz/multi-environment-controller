@@ -14,11 +14,11 @@ variable "environments" {
   description = "List of environments that will be created  that will be used to create github branches and environments"
 }
 
-variable "AZURE_REGION" {
-  type        = string
-  description = "Azure region to use for storage account."
-  sensitive   = true
-}
+#variable "AZURE_REGION" {
+#  type        = string
+#  description = "Azure region to use for storage account."
+#  sensitive   = true
+#}
 
 variable "ARM_SUBSCRIPTION_ID" {
   type        = string
@@ -42,10 +42,10 @@ variable "CONTROLLER_REPOSITORY_FULL_NAME" {
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
 }
 
-variable "OWNER_EMAIL" {
-  type        = string
-  description = "email address for the owner of resources used to tag azure resource groups"
-}
+#variable "OWNER_EMAIL" {
+#  type        = string
+#  description = "email address for the owner of resources used to tag azure resource groups"
+#}
 
 variable "CONTROLLER_REPOSITORY_TOKEN" {
   type        = string
