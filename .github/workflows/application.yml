@@ -74,7 +74,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> terraform.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}\"" >> terraform.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.CONTROLLER_ARM_TENANT_ID }}\"" >> terraform.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> terraform.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> terraform.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> terraform.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> terraform.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> terraform.auto.tfvars
@@ -200,7 +200,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> terraform.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}\"" >> terraform.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.CONTROLLER_ARM_TENANT_ID }}\"" >> terraform.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> terraform.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> terraform.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> terraform.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> terraform.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> terraform.auto.tfvars
@@ -277,7 +277,7 @@ jobs:
             echo "    REPOSITORY_FULL_NAME = \"${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}\"," >> terraform.auto.tfvars
             echo "    ARM_SUBSCRIPTION_ID  = \"${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}\"" >> terraform.auto.tfvars
             echo "    ARM_TENANT_ID        = \"${{ secrets.CONTROLLER_ARM_TENANT_ID }}\"" >> terraform.auto.tfvars
-            echo "    DEPLOYED             = \"true\"" >> terraform.auto.tfvars
+            echo "    DEPLOYED             = \"false\"" >> terraform.auto.tfvars
             echo "    AZURE_REGION         = \"${{ secrets.APPLICATION_AZURE_REGION }}\"" >> terraform.auto.tfvars
             echo "    OWNER_EMAIL          = \"${{ secrets.APPLICATION_OWNER_EMAIL }}\"" >> terraform.auto.tfvars
             echo "    CONTROLLER_REPOSITORY_FULL_NAME  = \"${{ github.repository }}\"" >> terraform.auto.tfvars
