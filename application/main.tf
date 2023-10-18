@@ -90,10 +90,10 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   repository      = data.github_repository.REPOSITORY.name
 }
 
-resource "github_actions_environment_secret" "TFSTATE_STORAGE_ACCOUNT_NAME" {
+resource "github_actions_environment_secret" "AZURE_STORAGE_ACCOUNT_NAME" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
-  secret_name     = "TFSTATE_STORAGE_ACCOUNT_NAME"
+  secret_name     = "AZURE_STORAGE_ACCOUNT_NAME"
   plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
   repository      = data.github_repository.REPOSITORY.name
 }
@@ -164,7 +164,7 @@ resource "null_resource" "environments" {
     ARM_SUBSCRIPTION_ID             = github_actions_environment_secret.ARM_SUBSCRIPTION_ID[each.key].plaintext_value
     ARM_TENANT_ID                   = github_actions_environment_secret.ARM_TENANT_ID[each.key].plaintext_value
     ARM_CLIENT_ID                   = github_actions_environment_secret.ARM_CLIENT_ID[each.key].plaintext_value
-    TFSTATE_STORAGE_ACCOUNT_NAME    = github_actions_environment_secret.TFSTATE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
+    AZURE_STORAGE_ACCOUNT_NAME    = github_actions_environment_secret.AZURE_STORAGE_ACCOUNT_NAME[each.key].plaintext_value
     AZURE_RESOURCE_GROUP_NAME       = github_actions_environment_secret.AZURE_RESOURCE_GROUP_NAME[each.key].plaintext_value
     TFSTATE_CONTAINER_NAME          = github_actions_environment_secret.TFSTATE_CONTAINER_NAME[each.key].plaintext_value
     OWNER_EMAIL                     = github_actions_environment_secret.OWNER_EMAIL[each.key].plaintext_value
