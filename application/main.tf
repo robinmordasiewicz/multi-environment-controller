@@ -90,11 +90,11 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   repository      = data.github_repository.REPOSITORY.name
 }
 
-resource "github_actions_environment_secret" "AZURE_STORAGE_ACCOUNT_NAME" {
+resource "github_actions_environment_secret" "AZURE_STORAGE_ACCOUNT_ID" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
-  secret_name     = "AZURE_STORAGE_ACCOUNT_NAME"
-  plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].name
+  secret_name     = "AZURE_STORAGE_ACCOUNT_ID"
+  plaintext_value = azurerm_storage_account.TFSTATE_STORAGE_ACCOUNT[each.key].id
   repository      = data.github_repository.REPOSITORY.name
 }
 
