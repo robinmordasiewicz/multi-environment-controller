@@ -90,10 +90,10 @@ resource "github_actions_environment_secret" "ARM_CLIENT_ID" {
   repository      = data.github_repository.REPOSITORY.name
 }
 
-resource "github_actions_environment_secret" "AZURE_SERVICE_PRINCIPLE_UUID" {
+resource "github_actions_environment_secret" "AZURE_SERVICE_PRINCIPAL_UUID" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
-  secret_name     = "AZURE_SERVICE_PRINCIPLE_UUID"
+  secret_name     = "AZURE_SERVICE_PRINCIPAL_UUID"
   plaintext_value = module.AZURE_SERVICE_PRINCIPAL[each.key].service_principal.object_id
   repository      = data.github_repository.REPOSITORY.name
 }
