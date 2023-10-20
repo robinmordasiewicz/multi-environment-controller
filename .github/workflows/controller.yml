@@ -7,6 +7,9 @@ concurrency:
 on:
   workflow_dispatch:
   push:
+  push:
+    paths:
+      - "controller/**.tf"
 
 permissions:
   id-token: write
