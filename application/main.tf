@@ -105,6 +105,14 @@ resource "github_actions_environment_secret" "AZURE_STORAGE_ACCOUNT_ID" {
   repository      = data.github_repository.REPOSITORY.name
 }
 
+resource "github_actions_environment_secret" "AZURE_SERVICE_PRINCIPLE_UUID" {
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+  environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
+  secret_name     = "AZURE_SERVICE_PRINCIPLE_UUID"
+  plaintext_value = data.azurerm_client_config.current.object_id
+  repository      = data.github_repository.REPOSITORY.name
+}
+
 resource "github_actions_environment_secret" "AZURE_RESOURCE_GROUP_NAME" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.REPOSITORY_BRANCH[each.key].environment
