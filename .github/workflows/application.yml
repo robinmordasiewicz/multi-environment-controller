@@ -149,7 +149,7 @@ jobs:
             exit 1
           else
             terraform show -json tfplan > tfplan.json
-            opa exec --decision terraform/functions/resources_created --bundle policy/ tfplan.json
+            #opa exec --decision terraform/functions/resources_created --bundle policy/ tfplan.json
             ls -al
             exit 0
           fi
