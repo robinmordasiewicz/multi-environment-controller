@@ -68,7 +68,7 @@ jobs:
           mv application/*.tf ./
           echo 'environments = [' > terraform.auto.tfvars ;
           i=0
-          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" || true ))
+          application_branches=($(git ls-remote --heads https://github.com/${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}.git | cut -f 3 -d "/" | grep -v "^main$" | grep -v '-patch-' || true ))
           for branch in "${application_branches[@]}"
           do
             i=$((i+1))
