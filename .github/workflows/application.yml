@@ -232,6 +232,9 @@ jobs:
 
       - name: Hashicorp Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+          terraform_wrapper: false
 
       - name: terraform init
         id: init
@@ -310,6 +313,7 @@ jobs:
       - name: Hashicorp Terraform
         uses: hashicorp/setup-terraform@v2
         with:
+          terraform_version: 1.5.7
           terraform_wrapper: false
 
       - name: terraform init
