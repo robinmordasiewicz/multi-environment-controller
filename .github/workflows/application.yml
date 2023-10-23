@@ -1,10 +1,10 @@
 ---
-name: 'Application Authorization'
+name: "Application Authorization"
 
 concurrency:
   group: ${{ github.workflow }}
 
-on:
+on: # yamllint disable-line rule:truthy
   push:
     paths:
       - "application/**.tf"
@@ -13,7 +13,7 @@ on:
       application:
         description: Authorize an Application
         type: string
-        default: ''
+        default: ""
         required: true
 
 permissions:
@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   terraform:
-    name: 'Terraform Init'
+    name: "Terraform Init"
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.application }}
     outputs:
@@ -44,9 +44,9 @@ jobs:
           else
             echo 'action=skip' >> ${GITHUB_OUTPUT}
           fi
-  
+
   terraform-plan:
-    name: 'Terraform Plan'
+    name: "Terraform Plan"
     needs: [terraform]
     environment: ${{ github.event.inputs.application }}
     if: needs.terraform.outputs.action == 'apply'
@@ -61,10 +61,10 @@ jobs:
       - name: GitHub Repository Checkout
         uses: actions/checkout@v4
         with:
-          sparse-checkout: 'application'
+          sparse-checkout: "application"
 
       - name: Applications Initialization
-        run : |
+        run: |
           mv application/*.tf ./
           echo 'environments = [' > terraform.auto.tfvars ;
           i=0
@@ -103,9 +103,6 @@ jobs:
         with:
           terraform_wrapper: false
 
-            #- name: terraform fmt -check
-            #run: terraform fmt -check
-
       - name: terraform init
         id: init
         env:
@@ -122,7 +119,7 @@ jobs:
       - name: terraform plan
         id: tf-plan
         env:
-          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
           TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
           TF_VAR_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
           TF_VAR_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
@@ -145,6 +142,8 @@ jobs:
             echo Terraform Plan Failed!
             exit 1
           else
+            terraform show -json tfplan > tfplan.json
+            opa exec --decision terraform/functions/resources_created --bundle policy/ tfplan.json
             exit 0
           fi
 
@@ -177,7 +176,7 @@ jobs:
           echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
 
   terraform-apply:
-    name: 'Terraform Apply'
+    name: "Terraform Apply"
     if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
     environment: ${{ github.event.inputs.application }}
     runs-on: ubuntu-latest
@@ -187,10 +186,10 @@ jobs:
       - name: Github Repository Checkout
         uses: actions/checkout@v4
         with:
-          sparse-checkout: 'application'
+          sparse-checkout: "application"
 
       - name: Applications Initialization
-        run : |
+        run: |
           mv application/*.tf ./
           echo 'environments = [' > terraform.auto.tfvars ;
           i=0
@@ -247,7 +246,7 @@ jobs:
 
       - name: terraform apply
         env:
-          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
@@ -255,7 +254,7 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
   destroy:
-    name: 'Terraform Destroy'
+    name: "Terraform Destroy"
     needs: [terraform]
     if: needs.terraform.outputs.action == 'destroy'
     environment: ${{ github.event.inputs.application }}
@@ -264,10 +263,10 @@ jobs:
       - name: Github Repository Checkout
         uses: actions/checkout@v3
         with:
-          sparse-checkout: 'application'
+          sparse-checkout: "application"
 
       - name: Applications Initialization
-        run : |
+        run: |
           mv application/*.tf ./
           echo 'environments = [' > terraform.auto.tfvars ;
           i=0
@@ -322,7 +321,7 @@ jobs:
       - name: terraform destroy
         id: destroy
         env:
-          GITHUB_TOKEN:  ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
           TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
           TF_VAR_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
           TF_VAR_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
