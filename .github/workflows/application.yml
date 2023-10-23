@@ -103,6 +103,11 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@9501844990f7dcfd09b17a8d97c794d294620f37
+        with:
+          version: latest
+
       - name: terraform init
         id: init
         env:
