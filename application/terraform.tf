@@ -26,7 +26,7 @@ terraform {
       version = "3.2.1"
     }
   }
-  # backend "azurerm" {}
+  backend "azurerm" {}
 }
 
 provider "github" {}
