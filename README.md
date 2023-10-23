@@ -8,6 +8,6 @@ A Github access token will be used by a workflow in this environment, to create 
 
 1. Create an access token from a Github account.
 
-```
-gh workflow run application.yml -R "robinmordasiewicz/multi-environment-controller" -f "application=cm9iaW5tb3JkYXNpZXdpY3ovZm9ydGluZXQtc2VjdXJlLWNsb3VkLWJsdWVwcmludC10ZXJyYWZvcm0="
+```bash
+gh workflow run application.yml -R "robinmordasiewicz/multi-environment-controller" -F "application=cm9iaW5tb3JkYXNpZXdpY3ovZm9ydGluZXQtc2VjdXJlLWNsb3VkLWJsdWVwcmludC10ZXJyYWZvcm0="
 ```

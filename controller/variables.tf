@@ -13,5 +13,6 @@ variable "applications" {
 }
 
 variable "CONTROLLER_REPOSITORY_FULL_NAME" {
-  type = string
+  description = "Controller Repository Full Name with org owner and repo <orgowner/repository>"
+  type        = string
 }

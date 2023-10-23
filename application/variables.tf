@@ -1,4 +1,5 @@
 variable "environments" {
+  description = "List of environments that will be created  that will be used to create github branches and environments"
   type = list(object({
     REPOSITORY_FULL_NAME            = string
     REPOSITORY_BRANCH               = string
@@ -10,30 +11,29 @@ variable "environments" {
     CONTROLLER_REPOSITORY_FULL_NAME = string
     CONTROLLER_REPOSITORY_TOKEN     = string
   }))
-  default     = []
-  description = "List of environments that will be created  that will be used to create github branches and environments"
+  default = []
 }
 
 variable "ARM_SUBSCRIPTION_ID" {
+  description = "Used for OIDC authentication"
   type        = string
   sensitive   = true
-  description = "Used for OIDC authentication"
 }
 
 variable "ARM_TENANT_ID" {
+  description = "Used for OIDC authentication"
   type        = string
   sensitive   = true
-  description = "Used for OIDC authentication"
 }
 
 variable "REPOSITORY_FULL_NAME" {
-  type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
+  type        = string
 }
 
 variable "CONTROLLER_REPOSITORY_FULL_NAME" {
-  type        = string
   description = "(Required) The name of the repository we're using in the form (org | user)/repo"
+  type        = string
 }
 
 #variable "OWNER_EMAIL" {
@@ -42,10 +42,11 @@ variable "CONTROLLER_REPOSITORY_FULL_NAME" {
 #}
 
 variable "CONTROLLER_REPOSITORY_TOKEN" {
-  type        = string
   description = "(Required) The actions token of the controller repository"
+  type        = string
 }
 
 variable "DEPLOYMENT_PROVISIONER_ROLE_NAME" {
-  type = string
+  description = "Azure Role Name for application provisioner"
+  type        = string
 }
