@@ -12,7 +12,7 @@ variable "applications" {
   description = "List of controllers that the registry will authorize"
 }
 
-variable "CONTROLLER_REPOSITORY_FULL_NAME" {
+variable "controller_repository_full_name" {
   description = "Controller Repository Full Name with org owner and repo <orgowner/repository>"
   type        = string
 }
