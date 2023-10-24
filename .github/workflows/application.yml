@@ -112,28 +112,25 @@ jobs:
       - name: terraform init
         id: init
         env:
-          RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}
-          TFSTATE_KEY: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+          TF_CLI_ARGS_init: -backend-config="storage_account_name=${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}" -backend-config="container_name=${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}" -backend-config="key=${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}" -backend-config="use_oidc=true" -input=false
+        run: terraform init
 
       - name: terraform plan
         id: tf-plan
         env:
           GITHUB_TOKEN: ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
-          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
-          TF_VAR_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
-          TF_VAR_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
-          TF_VAR_ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
-          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
-          TF_VAR_CONTROLLER_REPOSITORY_TOKEN: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
-          TF_VAR_DEPLOYMENT_PROVISIONER_ROLE_NAME: ${{ secrets.DEPLOYMENT_PROVISIONER_ROLE_NAME }}
+          TF_VAR_repository_full_name: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          TF_VAR_azure_region: ${{ secrets.APPLICATION_AZURE_REGION }}
+          TF_VAR_owner_email: ${{ secrets.APPLICATION_OWNER_EMAIL }}
+          TF_VAR_arm_tenant_id: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          TF_VAR_arm_subscription_id: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
+          TF_VAR_controller_repository_full_name: ${{ github.repository }}
+          TF_VAR_controller_repository_token: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
+          TF_VAR_deployment_provisioner_role_name: ${{ secrets.DEPLOYMENT_PROVISIONER_ROLE_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
@@ -247,7 +244,8 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+          TF_CLI_ARGS_init: -backend-config="storage_account_name=${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}" -backend-config="container_name=${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}" -backend-config="key=${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}" -backend-config="use_oidc=true" -input=false
+        run: terraform init
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v3
@@ -327,20 +325,21 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+          TF_CLI_ARGS_init: -backend-config="storage_account_name=${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}" -backend-config="container_name=${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}" -backend-config="key=${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}" -backend-config="use_oidc=true" -input=false
+        run: terraform init
 
       - name: terraform destroy
         id: destroy
         env:
           GITHUB_TOKEN: ${{ secrets.APPLICATION_REPOSITORY_TOKEN }}
-          TF_VAR_REPOSITORY_FULL_NAME: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
-          TF_VAR_AZURE_REGION: ${{ secrets.APPLICATION_AZURE_REGION }}
-          TF_VAR_OWNER_EMAIL: ${{ secrets.APPLICATION_OWNER_EMAIL }}
-          TF_VAR_ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
-          TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
-          TF_VAR_CONTROLLER_REPOSITORY_FULL_NAME: ${{ github.repository }}
-          TF_VAR_CONTROLLER_REPOSITORY_TOKEN: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
-          TF_VAR_DEPLOYMENT_PROVISIONER_ROLE_NAME: ${{ secrets.DEPLOYMENT_PROVISIONER_ROLE_NAME }}
+          TF_VAR_repository_full_name: ${{ secrets.APPLICATION_REPOSITORY_FULL_NAME }}
+          TF_VAR_azure_region: ${{ secrets.APPLICATION_AZURE_REGION }}
+          TF_VAR_owner_email: ${{ secrets.APPLICATION_OWNER_EMAIL }}
+          TF_VAR_arm_tenant_id: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
+          TF_VAR_arm_subscription_id: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
+          TF_VAR_controller_repository_full_name: ${{ github.repository }}
+          TF_VAR_controller_repository_token: ${{ secrets.CONTROLLER_REPOSITORY_TOKEN }}
+          TF_VAR_deployment_provisioner_role_name: ${{ secrets.DEPLOYMENT_PROVISIONER_ROLE_NAME }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.APPLICATION_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}

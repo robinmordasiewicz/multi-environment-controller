@@ -95,15 +95,12 @@ jobs:
       - name: terraform init
         id: init
         env:
-          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}
-          TFSTATE_KEY: main
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+          TF_CLI_ARGS_init: -backend-config="storage_account_name=${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}" -backend-config="container_name=${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}" -backend-config="key=${{ github.ref_name }}" -backend-config="use_oidc=true" -input=false
+        run: terraform init
 
       - name: terraform plan
         id: tf-plan
@@ -213,15 +210,12 @@ jobs:
       - name: terraform init
         id: init
         env:
-          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}
-          TFSTATE_KEY: main
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+          TF_CLI_ARGS_init: -backend-config="storage_account_name=${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}" -backend-config="container_name=${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}" -backend-config="key=${{ github.ref_name }}" -backend-config="use_oidc=true" -input=false
+        run: terraform init
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v3
@@ -293,15 +287,12 @@ jobs:
       - name: terraform init
         id: init
         env:
-          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}
-          TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}
-          TFSTATE_CONTAINER_NAME: ${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}
-          TFSTATE_KEY: main
           ARM_SUBSCRIPTION_ID: ${{ secrets.CONTROLLER_ARM_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.CONTROLLER_ARM_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.CONTROLLER_ARM_TENANT_ID }}
           ARM_USE_OIDC: true
-        run: terraform init -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${TFSTATE_CONTAINER_NAME}" -backend-config="resource_group_name=${AZURE_RESOURCE_GROUP_NAME}" -backend-config="key=${TFSTATE_KEY}" -backend-config="use_oidc=true" -input=false
+          TF_CLI_ARGS_init: -backend-config="storage_account_name=${{ secrets.CONTROLLER_TFSTATE_STORAGE_ACCOUNT_NAME }}" -backend-config="container_name=${{ secrets.CONTROLLER_TFSTATE_CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.CONTROLLER_AZURE_RESOURCE_GROUP_NAME }}" -backend-config="key=${{ github.ref_name }}" -backend-config="use_oidc=true" -input=false
+        run: terraform init
 
       - name: terraform destroy
         id: destroy
