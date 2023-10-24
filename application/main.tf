@@ -67,8 +67,7 @@ resource "azurerm_storage_container" "azure_tfstate_container" {
   for_each              = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   name                  = lower(each.key)
   storage_account_name  = azurerm_storage_account.tfstate_storage_account[each.key].name
-  container_access_type = "blob"
-
+  container_access_type = "private"
 }
 
 module "azure_service_principal" {
