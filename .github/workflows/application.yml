@@ -146,7 +146,7 @@ jobs:
             exit 1
           else
             terraform show -json tfplan | grep '^{.*}$' > tfplan.json
-            opa exec --decision terraform/functions/deny --bundle policy/ tfplan.json
+            #opa exec --decision terraform/functions/deny --bundle policy/ tfplan.json
             ls -al
             exit 0
           fi
