@@ -72,7 +72,7 @@ resource "github_actions_environment_secret" "arm_subscription_id" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "ARM_SUBSCRIPTION_ID"
-  plaintext_value = var.arm_subscription_id
+  encrypted_value = var.arm_subscription_id
   repository      = data.github_repository.repository.name
 }
 
@@ -80,7 +80,7 @@ resource "github_actions_environment_secret" "arm_tenant_id" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "ARM_TENANT_ID"
-  plaintext_value = var.arm_tenant_id
+  encrypted_value = var.arm_tenant_id
   repository      = data.github_repository.repository.name
 }
 
@@ -88,7 +88,7 @@ resource "github_actions_environment_secret" "arm_client_id" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "ARM_CLIENT_ID"
-  plaintext_value = module.azure_service_principal[each.key].service_principal.application_id
+  encrypted_value = module.azure_service_principal[each.key].service_principal.application_id
   repository      = data.github_repository.repository.name
 }
 
@@ -96,7 +96,7 @@ resource "github_actions_environment_secret" "azure_service_principal_uuid" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_SERVICE_PRINCIPAL_UUID"
-  plaintext_value = module.azure_service_principal[each.key].service_principal.object_id
+  encrypted_value = module.azure_service_principal[each.key].service_principal.object_id
   repository      = data.github_repository.repository.name
 }
 
@@ -104,7 +104,7 @@ resource "github_actions_environment_secret" "azure_storage_account_name" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_STORAGE_ACCOUNT_NAME"
-  plaintext_value = azurerm_storage_account.tfstate_storage_account[each.key].name
+  encrypted_value = azurerm_storage_account.tfstate_storage_account[each.key].name
   repository      = data.github_repository.repository.name
 }
 
@@ -112,7 +112,7 @@ resource "github_actions_environment_secret" "azure_storage_account_id" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_STORAGE_ACCOUNT_ID"
-  plaintext_value = azurerm_storage_account.tfstate_storage_account[each.key].id
+  encrypted_value = azurerm_storage_account.tfstate_storage_account[each.key].id
   repository      = data.github_repository.repository.name
 }
 
@@ -121,7 +121,7 @@ resource "github_actions_environment_secret" "azure_resource_group_name" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_RESOURCE_GROUP_NAME"
-  plaintext_value = azurerm_resource_group.azure_resource_group[each.key].name
+  encrypted_value = azurerm_resource_group.azure_resource_group[each.key].name
   repository      = data.github_repository.repository.name
 }
 
@@ -129,7 +129,7 @@ resource "github_actions_environment_secret" "tfstate_container_name" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "TFSTATE_CONTAINER_NAME"
-  plaintext_value = azurerm_storage_container.azure_tfstate_container[each.key].name
+  encrypted_value = azurerm_storage_container.azure_tfstate_container[each.key].name
   repository      = data.github_repository.repository.name
 }
 
@@ -137,7 +137,7 @@ resource "github_actions_environment_secret" "owner_email" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "OWNER_EMAIL"
-  plaintext_value = each.value.owner_email
+  encrypted_value = each.value.owner_email
   repository      = data.github_repository.repository.name
 }
 
@@ -145,20 +145,20 @@ resource "github_actions_environment_secret" "azure_region" {
   for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_REGION"
-  plaintext_value = each.value.azure_region
+  encrypted_value = each.value.azure_region
   repository      = data.github_repository.repository.name
 }
 
 resource "github_actions_secret" "controller_repository_token" {
   secret_name     = "CONTROLLER_REPOSITORY_TOKEN"
   repository      = data.github_repository.repository.name
-  plaintext_value = var.controller_repository_token
+  encrypted_value = var.controller_repository_token
 }
 
 resource "github_actions_secret" "controller_repository_full_name" {
   secret_name     = "CONTROLLER_REPOSITORY_FULL_NAME"
   repository      = data.github_repository.repository.name
-  plaintext_value = var.controller_repository_full_name
+  encrypted_value = var.controller_repository_full_name
 }
 
 resource "github_actions_environment_variable" "deployed" {
@@ -172,14 +172,14 @@ resource "github_actions_environment_variable" "deployed" {
 resource "null_resource" "environments" {
   for_each = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
   triggers = {
-    arm_subscription_id        = github_actions_environment_secret.arm_subscription_id[each.key].plaintext_value
-    arm_tenant_id              = github_actions_environment_secret.arm_tenant_id[each.key].plaintext_value
-    arm_client_id              = github_actions_environment_secret.arm_client_id[each.key].plaintext_value
-    azure_storage_account_name = github_actions_environment_secret.azure_storage_account_name[each.key].plaintext_value
-    azure_resource_group_name  = github_actions_environment_secret.azure_resource_group_name[each.key].plaintext_value
-    tfstate_container_name     = github_actions_environment_secret.tfstate_container_name[each.key].plaintext_value
-    owner_email                = github_actions_environment_secret.owner_email[each.key].plaintext_value
-    azure_region               = github_actions_environment_secret.azure_region[each.key].plaintext_value
+    arm_subscription_id        = github_actions_environment_secret.arm_subscription_id[each.key].encrypted_value
+    arm_tenant_id              = github_actions_environment_secret.arm_tenant_id[each.key].encrypted_value
+    arm_client_id              = github_actions_environment_secret.arm_client_id[each.key].encrypted_value
+    azure_storage_account_name = github_actions_environment_secret.azure_storage_account_name[each.key].encrypted_value
+    azure_resource_group_name  = github_actions_environment_secret.azure_resource_group_name[each.key].encrypted_value
+    tfstate_container_name     = github_actions_environment_secret.tfstate_container_name[each.key].encrypted_value
+    owner_email                = github_actions_environment_secret.owner_email[each.key].encrypted_value
+    azure_region               = github_actions_environment_secret.azure_region[each.key].encrypted_value
     deployed                   = github_actions_environment_variable.deployed[each.key].value
     principal_id               = module.azure_service_principal[each.key].service_principal.object_id
   }

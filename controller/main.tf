@@ -78,7 +78,7 @@ resource "github_actions_environment_secret" "arm_client_id" {
   for_each        = { for application in var.applications : application.repository_full_name => application }
   secret_name     = "APPLICATION_ARM_CLIENT_ID"
   environment     = github_repository_environment.repository_full_name[each.key].environment
-  plaintext_value = azuread_service_principal.azure_service_principal[each.key].application_id
+  encrypted_value = azuread_service_principal.azure_service_principal[each.key].application_id
   repository      = data.github_repository.controller_repository.name
 }
 
@@ -86,7 +86,7 @@ resource "github_actions_environment_secret" "owner_email" {
   for_each        = { for application in var.applications : application.repository_full_name => application }
   secret_name     = "APPLICATION_OWNER_EMAIL"
   environment     = github_repository_environment.repository_full_name[each.key].environment
-  plaintext_value = each.value.owner_email
+  encrypted_value = each.value.owner_email
   repository      = data.github_repository.controller_repository.name
 }
 
@@ -94,7 +94,7 @@ resource "github_actions_environment_secret" "azure_region" {
   for_each        = { for application in var.applications : application.repository_full_name => application }
   secret_name     = "APPLICATION_AZURE_REGION"
   environment     = github_repository_environment.repository_full_name[each.key].environment
-  plaintext_value = each.value.azure_region
+  encrypted_value = each.value.azure_region
   repository      = data.github_repository.controller_repository.name
 }
 
@@ -103,7 +103,7 @@ resource "github_actions_environment_secret" "repository_full_name" {
   secret_name     = "APPLICATION_REPOSITORY_FULL_NAME"
   environment     = github_repository_environment.repository_full_name[each.key].environment
   repository      = data.github_repository.controller_repository.name
-  plaintext_value = each.value.repository_full_name
+  encrypted_value = each.value.repository_full_name
 }
 
 resource "github_actions_environment_secret" "repository_token" {
@@ -111,7 +111,7 @@ resource "github_actions_environment_secret" "repository_token" {
   secret_name     = "APPLICATION_REPOSITORY_TOKEN"
   environment     = github_repository_environment.repository_full_name[each.key].environment
   repository      = data.github_repository.controller_repository.name
-  plaintext_value = each.value.repository_token
+  encrypted_value = each.value.repository_token
 }
 
 resource "github_actions_environment_variable" "deployed" {
@@ -125,11 +125,11 @@ resource "github_actions_environment_variable" "deployed" {
 resource "null_resource" "environments" {
   for_each = { for application in var.applications : application.repository_full_name => application }
   triggers = {
-    arm_client_id        = github_actions_environment_secret.arm_client_id[each.key].plaintext_value
-    owner_email          = github_actions_environment_secret.owner_email[each.key].plaintext_value
-    azure_region         = github_actions_environment_secret.azure_region[each.key].plaintext_value
-    repository_full_name = github_actions_environment_secret.repository_full_name[each.key].plaintext_value
-    repository_token     = github_actions_environment_secret.repository_token[each.key].plaintext_value
+    arm_client_id        = github_actions_environment_secret.arm_client_id[each.key].encrypted_value
+    owner_email          = github_actions_environment_secret.owner_email[each.key].encrypted_value
+    azure_region         = github_actions_environment_secret.azure_region[each.key].encrypted_value
+    repository_full_name = github_actions_environment_secret.repository_full_name[each.key].encrypted_value
+    repository_token     = github_actions_environment_secret.repository_token[each.key].encrypted_value
     deployed             = github_actions_environment_variable.deployed[each.key].value
   }
   provisioner "local-exec" {
