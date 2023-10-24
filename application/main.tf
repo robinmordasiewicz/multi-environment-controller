@@ -75,7 +75,7 @@ module "azure_service_principal" {
   environment_name = each.value.repository_branch
   identity_name    = "${local.repository_full_name_no_slash}-${each.value.repository_branch}"
   source           = "ned1313/github_oidc/azuread"
-  version          = ">=1.2.0"
+  version          = "04f9680f381ed1fa543a8c8634b9692e4b29c4cb"
   entity_type      = "environment"
   repository_name  = data.github_repository.repository.full_name
 }
