@@ -148,7 +148,7 @@ jobs:
             echo Terraform Plan Failed!
             exit 1
           else
-            terraform show -json tfplan > tfplan.json
+            terraform show -json tfplan | grep '^{.*}$' > tfplan.json
             opa exec --decision terraform/functions/deny --bundle policy/ tfplan.json
             ls -al
             exit 0
