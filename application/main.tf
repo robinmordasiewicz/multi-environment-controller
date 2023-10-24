@@ -24,13 +24,15 @@ resource "random_integer" "random_number" {
 }
 
 resource "azurerm_storage_account" "tfstate_storage_account" {
-  for_each                  = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
-  resource_group_name       = azurerm_resource_group.azure_resource_group[each.key].name
-  location                  = azurerm_resource_group.azure_resource_group[each.key].location
-  name                      = "${random_integer.random_number[each.key].result}${lower(each.key)}"
-  account_tier              = "Standard"
-  account_replication_type  = "LRS"
-  enable_https_traffic_only = true
+  for_each                      = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  resource_group_name           = azurerm_resource_group.azure_resource_group[each.key].name
+  location                      = azurerm_resource_group.azure_resource_group[each.key].location
+  name                          = "${random_integer.random_number[each.key].result}${lower(each.key)}"
+  account_tier                  = "Standard"
+  account_replication_type      = "LRS"
+  enable_https_traffic_only     = true
+  min_tls_version               = "TLS1_2"
+  public_network_access_enabled = false
 }
 
 resource "azurerm_storage_container" "azure_tfstate_container" {
