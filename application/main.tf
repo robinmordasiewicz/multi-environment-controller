@@ -52,6 +52,15 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
   enable_https_traffic_only     = true
   min_tls_version               = "TLS1_2"
   public_network_access_enabled = false
+  queue_properties {
+    logging {
+      delete                = true
+      read                  = true
+      write                 = true
+      version               = "1.0"
+      retention_policy_days = 10
+    }
+  }
 }
 
 resource "azurerm_storage_container" "azure_tfstate_container" {
