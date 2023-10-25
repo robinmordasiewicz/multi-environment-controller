@@ -5,9 +5,9 @@ concurrency:
   group: ${{ github.workflow }}
 
 on: # yamllint disable-line rule:truthy
-  push:
-    paths:
-      - "application/**.tf"
+  #push:
+  #  paths:
+  #    - "application/**.tf"
   workflow_dispatch:
     inputs:
       application:
