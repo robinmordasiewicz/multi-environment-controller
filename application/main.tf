@@ -9,22 +9,22 @@ locals {
 }
 
 resource "azurerm_resource_group" "azure_resource_group" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   name     = "${local.repository_full_name_no_slash}-${each.key}"
-  location = each.value.azure_region
+  location = each.value.AZURE_REGION
   tags = {
-    Username = each.value.owner_email
+    Username = each.value.OWNER_EMAIL
   }
 }
 
 resource "random_integer" "random_number" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   min      = 10000
   max      = 99999
 }
 
 resource "azurerm_log_analytics_workspace" "analytics_workspace" {
-  for_each            = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each            = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   name                = "${random_integer.random_number[each.key].result}${lower(each.key)}"
   resource_group_name = azurerm_resource_group.azure_resource_group[each.key].name
   location            = azurerm_resource_group.azure_resource_group[each.key].location
@@ -33,7 +33,7 @@ resource "azurerm_log_analytics_workspace" "analytics_workspace" {
 }
 
 resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok" {
-  for_each             = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each             = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   name                 = "example-storageinsightconfig"
   resource_group_name  = azurerm_resource_group.azure_resource_group[each.key].name
   workspace_id         = azurerm_log_analytics_workspace.analytics_workspace[each.key].id
@@ -43,7 +43,7 @@ resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok
 }
 
 resource "azurerm_storage_account" "tfstate_storage_account" {
-  for_each                      = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each                      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   resource_group_name           = azurerm_resource_group.azure_resource_group[each.key].name
   location                      = azurerm_resource_group.azure_resource_group[each.key].location
   name                          = "${random_integer.random_number[each.key].result}${lower(each.key)}"
@@ -64,16 +64,16 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
 }
 
 resource "azurerm_storage_container" "azure_tfstate_container" {
-  for_each              = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each              = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   name                  = lower(each.key)
   storage_account_name  = azurerm_storage_account.tfstate_storage_account[each.key].name
   container_access_type = "private"
 }
 
 module "azure_service_principal" {
-  for_each         = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
-  environment_name = each.value.repository_branch
-  identity_name    = "${local.repository_full_name_no_slash}-${each.value.repository_branch}"
+  for_each         = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+  environment_name = each.value.REPOSITORY_BRANCH
+  identity_name    = "${local.repository_full_name_no_slash}-${each.value.REPOSITORY_BRANCH}"
   source           = "ned1313/github_oidc/azuread"
   version          = "1.2.1"
   entity_type      = "environment"
@@ -81,7 +81,7 @@ module "azure_service_principal" {
 }
 
 resource "azurerm_role_assignment" "azure_provisioner_role_assignment" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   #scope                = azurerm_resource_group.azure_resource_group[each.key].id
   scope                = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
   role_definition_name = var.deployment_provisioner_role_name
@@ -89,7 +89,7 @@ resource "azurerm_role_assignment" "azure_provisioner_role_assignment" {
 }
 
 resource "github_repository_environment" "repository_branch" {
-  for_each    = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each    = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment = each.key
   repository  = data.github_repository.repository.name
   depends_on = [
@@ -98,7 +98,7 @@ resource "github_repository_environment" "repository_branch" {
 }
 
 resource "github_actions_environment_secret" "arm_subscription_id" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "ARM_SUBSCRIPTION_ID"
   plaintext_value = var.arm_subscription_id
@@ -106,7 +106,7 @@ resource "github_actions_environment_secret" "arm_subscription_id" {
 }
 
 resource "github_actions_environment_secret" "arm_tenant_id" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "ARM_TENANT_ID"
   plaintext_value = var.arm_tenant_id
@@ -114,7 +114,7 @@ resource "github_actions_environment_secret" "arm_tenant_id" {
 }
 
 resource "github_actions_environment_secret" "arm_client_id" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "ARM_CLIENT_ID"
   plaintext_value = module.azure_service_principal[each.key].service_principal.application_id
@@ -122,7 +122,7 @@ resource "github_actions_environment_secret" "arm_client_id" {
 }
 
 resource "github_actions_environment_secret" "azure_service_principal_uuid" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_SERVICE_PRINCIPAL_UUID"
   plaintext_value = module.azure_service_principal[each.key].service_principal.object_id
@@ -130,7 +130,7 @@ resource "github_actions_environment_secret" "azure_service_principal_uuid" {
 }
 
 resource "github_actions_environment_secret" "azure_storage_account_name" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_STORAGE_ACCOUNT_NAME"
   plaintext_value = azurerm_storage_account.tfstate_storage_account[each.key].name
@@ -138,7 +138,7 @@ resource "github_actions_environment_secret" "azure_storage_account_name" {
 }
 
 resource "github_actions_environment_secret" "azure_storage_account_id" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_STORAGE_ACCOUNT_ID"
   plaintext_value = azurerm_storage_account.tfstate_storage_account[each.key].id
@@ -147,7 +147,7 @@ resource "github_actions_environment_secret" "azure_storage_account_id" {
 
 
 resource "github_actions_environment_secret" "azure_resource_group_name" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_RESOURCE_GROUP_NAME"
   plaintext_value = azurerm_resource_group.azure_resource_group[each.key].name
@@ -155,7 +155,7 @@ resource "github_actions_environment_secret" "azure_resource_group_name" {
 }
 
 resource "github_actions_environment_secret" "tfstate_container_name" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "TFSTATE_CONTAINER_NAME"
   plaintext_value = azurerm_storage_container.azure_tfstate_container[each.key].name
@@ -163,18 +163,18 @@ resource "github_actions_environment_secret" "tfstate_container_name" {
 }
 
 resource "github_actions_environment_secret" "owner_email" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "OWNER_EMAIL"
-  plaintext_value = each.value.owner_email
+  plaintext_value = each.value.OWNER_EMAIL
   repository      = data.github_repository.repository.name
 }
 
 resource "github_actions_environment_secret" "azure_region" {
-  for_each        = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each        = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment     = github_repository_environment.repository_branch[each.key].environment
   secret_name     = "AZURE_REGION"
-  plaintext_value = each.value.azure_region
+  plaintext_value = each.value.AZURE_REGION
   repository      = data.github_repository.repository.name
 }
 
@@ -191,15 +191,15 @@ resource "github_actions_secret" "controller_repository_full_name" {
 }
 
 resource "github_actions_environment_variable" "deployed" {
-  for_each      = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment   = github_repository_environment.repository_branch[each.key].environment
   variable_name = "DEPLOYED"
   repository    = data.github_repository.repository.name
-  value         = each.value.deployed
+  value         = each.value.DEPLOYED
 }
 
 resource "null_resource" "environments" {
-  for_each = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+  for_each = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   triggers = {
     arm_subscription_id        = github_actions_environment_secret.arm_subscription_id[each.key].plaintext_value
     arm_tenant_id              = github_actions_environment_secret.arm_tenant_id[each.key].plaintext_value
@@ -218,7 +218,7 @@ resource "null_resource" "environments" {
 }
 
 #resource "github_branch_protection" "protection" {
-#  for_each      = { for deployment_environment in var.environments : deployment_environment.repository_branch => deployment_environment }
+#  for_each      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
 #  repository_id = data.github_repository.repository.node_id
 #  pattern       = each.key
 #  required_pull_request_reviews {
