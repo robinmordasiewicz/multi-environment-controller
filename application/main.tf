@@ -32,16 +32,6 @@ resource "azurerm_log_analytics_workspace" "analytics_workspace" {
   retention_in_days   = 30
 }
 
-resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok" {
-  for_each             = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
-  name                 = "example-storageinsightconfig"
-  resource_group_name  = azurerm_resource_group.azure_resource_group[each.key].name
-  workspace_id         = azurerm_log_analytics_workspace.analytics_workspace[each.key].id
-  storage_account_id   = azurerm_storage_account.tfstate_storage_account[each.key].id
-  storage_account_key  = azurerm_storage_account.tfstate_storage_account[each.key].primary_access_key
-  blob_container_names = ["blob-[each.key]"]
-}
-
 resource "azurerm_storage_account" "tfstate_storage_account" {
   for_each                      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   resource_group_name           = azurerm_resource_group.azure_resource_group[each.key].name
@@ -52,6 +42,12 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
   enable_https_traffic_only     = true
   min_tls_version               = "TLS1_2"
   public_network_access_enabled = false
+  blob_properties {
+    last_access_time_enabled = true
+    delete_retention_policy {
+      days = 5
+    }
+  }
   queue_properties {
     logging {
       delete                = true
@@ -61,6 +57,16 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
       retention_policy_days = 10
     }
   }
+}
+
+resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok" {
+  for_each             = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+  name                 = "example-storageinsightconfig"
+  resource_group_name  = azurerm_resource_group.azure_resource_group[each.key].name
+  workspace_id         = azurerm_log_analytics_workspace.analytics_workspace[each.key].id
+  storage_account_id   = azurerm_storage_account.tfstate_storage_account[each.key].id
+  storage_account_key  = azurerm_storage_account.tfstate_storage_account[each.key].primary_access_key
+  blob_container_names = ["blob-[each.key]"]
 }
 
 resource "azurerm_storage_container" "azure_tfstate_container" {
