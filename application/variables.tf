@@ -1,15 +1,15 @@
 variable "environments" {
   description = "List of environments that will be created  that will be used to create github branches and environments"
   type = list(object({
-    repository_full_name            = string
+    REPOSITORY_FULL_NAME            = string
     REPOSITORY_BRANCH               = string
-    arm_subscription_id             = string
-    arm_tenant_id                   = string
+    ARM_SUBSCRIPTION_ID             = string
+    ARM_TENANT_ID                   = string
     AZURE_REGION                    = string
     OWNER_EMAIL                     = string
     DEPLOYED                        = string
-    controller_repository_full_name = string
-    controller_repository_token     = string
+    CONTROLLER_REPOSITORY_FULL_NAME = string
+    CONTROLLER_REPOSITORY_TOKEN     = string
   }))
   default = []
 }
