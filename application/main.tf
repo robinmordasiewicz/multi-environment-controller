@@ -74,10 +74,11 @@ module "azure_service_principal" {
   for_each         = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
   environment_name = each.value.REPOSITORY_BRANCH
   identity_name    = "${local.repository_full_name_no_slash}-${each.value.REPOSITORY_BRANCH}"
-  source           = "ned1313/github_oidc/azuread"
-  version          = "1.2.1"
-  entity_type      = "environment"
-  repository_name  = data.github_repository.repository.full_name
+  #source           = "ned1313/github_oidc/azuread"
+  source = "git::https://github.com/ned1313/terraform-azuread-github_oidc.git?ref=04f9680f381ed1fa543a8c8634b9692e4b29c4cb"
+  #version          = "1.2.1"
+  entity_type     = "environment"
+  repository_name = data.github_repository.repository.full_name
 }
 
 resource "azurerm_role_assignment" "azure_provisioner_role_assignment" {
