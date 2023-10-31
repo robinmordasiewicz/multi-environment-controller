@@ -33,30 +33,30 @@ resource "random_integer" "random_number" {
 #}
 
 resource "azurerm_storage_account" "tfstate_storage_account" {
-  for_each                      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
-  resource_group_name           = azurerm_resource_group.azure_resource_group[each.key].name
-  location                      = azurerm_resource_group.azure_resource_group[each.key].location
-  name                          = "${random_integer.random_number[each.key].result}${lower(each.key)}"
-  account_tier                  = "Standard"
-  account_replication_type      = "LRS"
-  enable_https_traffic_only     = true
-  min_tls_version               = "TLS1_2"
-  public_network_access_enabled = false
+  for_each            = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+  resource_group_name = azurerm_resource_group.azure_resource_group[each.key].name
+  location            = azurerm_resource_group.azure_resource_group[each.key].location
+  name                = "${random_integer.random_number[each.key].result}${lower(each.key)}"
+  account_tier        = "Standard"
+  #account_replication_type      = "LRS"
+  enable_https_traffic_only = true
+  #min_tls_version               = "TLS1_2"
+  #public_network_access_enabled = false
   #blob_properties {
   #  last_access_time_enabled = true
   #  delete_retention_policy {
   #    days = 5
   #  }
   #}
-  queue_properties {
-    logging {
-      delete                = true
-      read                  = true
-      write                 = true
-      version               = "1.0"
-      retention_policy_days = 10
-    }
-  }
+  #queue_properties {
+  #  logging {
+  #    delete                = true
+  #    read                  = true
+  #    write                 = true
+  #    version               = "1.0"
+  #    retention_policy_days = 10
+  #  }
+  #}
 }
 
 #resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok" {
@@ -70,10 +70,10 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
 #}
 
 resource "azurerm_storage_container" "azure_tfstate_container" {
-  for_each              = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
-  name                  = lower(each.key)
-  storage_account_name  = azurerm_storage_account.tfstate_storage_account[each.key].name
-  container_access_type = "private"
+  for_each             = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+  name                 = lower(each.key)
+  storage_account_name = azurerm_storage_account.tfstate_storage_account[each.key].name
+  #container_access_type = "private"
 }
 
 module "azure_service_principal" {
