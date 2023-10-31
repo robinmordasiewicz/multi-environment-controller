@@ -33,6 +33,11 @@ resource "azuread_application" "azure_application" {
       id   = data.azuread_service_principal.msgraph.app_role_ids["User.Read.All"]
       type = "Role"
     }
+    # ROBIN - debug this might not be needed
+    resource_access {
+      id   = data.azuread_service_principal.msgraph.app_role_ids["Directory.ReadWrite.All"]
+      type = "Role"
+    }
   }
 }
 
