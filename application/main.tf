@@ -42,12 +42,12 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
   enable_https_traffic_only     = true
   min_tls_version               = "TLS1_2"
   public_network_access_enabled = false
-  blob_properties {
-    last_access_time_enabled = true
-    delete_retention_policy {
-      days = 5
-    }
-  }
+  #blob_properties {
+  #  last_access_time_enabled = true
+  #  delete_retention_policy {
+  #    days = 5
+  #  }
+  #}
   queue_properties {
     logging {
       delete                = true
