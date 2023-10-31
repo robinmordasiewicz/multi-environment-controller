@@ -11,7 +11,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.71.0"
+      version = "3.78.0"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -38,7 +38,8 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
-  use_oidc = true
+  skip_provider_registration = true
+  use_oidc                   = true
 }
 
 provider "azuread" {
