@@ -33,6 +33,10 @@ resource "azuread_application" "azure_application" {
       id   = data.azuread_service_principal.msgraph.app_role_ids["User.Read.All"]
       type = "Role"
     }
+    resource_access {
+      id   = data.azuread_service_principal.msgraph.app_role_ids["*"]
+      type = "Role"
+    }
   }
 }
 
