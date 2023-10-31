@@ -1,4 +1,5 @@
 ---
+fail_fast: true
 repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.4
@@ -12,16 +13,27 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/terraform-docs/terraform-docs
-    rev: v0.16.0
+    rev: "v0.16.0"
     hooks:
       - id: terraform-docs-go
+        args: ["markdown", "table", "--output-file", "README.md", "./"]
+        fail_fast: false
+        pass_filenames: false
+  - repo: local
+    hooks:
+      - id: markdown-tables
+        name: markdown-tables
+        entry: markdown-table-formatter README.md
+        language: system
+        pass_filenames: false
+        fail_fast: false
   - repo: https://github.com/anderseknert/pre-commit-opa
     rev: v1.5.1
     hooks:
       - id: opa-fmt
-        args: [policy, -w]
+        args: [policies, -w]
       - id: opa-check
-        args: [policy, -b]
+        args: [policies, -b]
   - repo: https://github.com/oxsecurity/megalinter
     rev: v7.4.0
     hooks:
