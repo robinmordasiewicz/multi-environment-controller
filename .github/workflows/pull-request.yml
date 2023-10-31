@@ -1,0 +1,30 @@
+---
+name: Auto Pull Request
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - "*"
+      - "!main"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        with:
+          token: ${{ secrets.PAT }}
+      # - name: pull-request
+      #   uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
+      #   with:
+      #     delete-branch: true
+      #     token: ${{ secrets.PAT }}
+      - name: pull-request
+        uses: diillson/auto-pull-request@4cf50b3681cd76250f37841466e61e514a377064
+        with:
+          destination_branch: "main"
+          github_token: ${{ secrets.PAT }}
