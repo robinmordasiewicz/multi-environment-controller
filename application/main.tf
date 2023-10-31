@@ -23,14 +23,14 @@ resource "random_integer" "random_number" {
   max      = 99999
 }
 
-resource "azurerm_log_analytics_workspace" "analytics_workspace" {
-  for_each            = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
-  name                = "${random_integer.random_number[each.key].result}${lower(each.key)}"
-  resource_group_name = azurerm_resource_group.azure_resource_group[each.key].name
-  location            = azurerm_resource_group.azure_resource_group[each.key].location
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-}
+#resource "azurerm_log_analytics_workspace" "analytics_workspace" {
+#  for_each            = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+#  name                = "${random_integer.random_number[each.key].result}${lower(each.key)}"
+#  resource_group_name = azurerm_resource_group.azure_resource_group[each.key].name
+#  location            = azurerm_resource_group.azure_resource_group[each.key].location
+#  sku                 = "PerGB2018"
+#  retention_in_days   = 30
+#}
 
 resource "azurerm_storage_account" "tfstate_storage_account" {
   for_each                      = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
@@ -59,15 +59,15 @@ resource "azurerm_storage_account" "tfstate_storage_account" {
   }
 }
 
-resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok" {
-  for_each             = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
-  name                 = "${each.key}-storageinsightconfig"
-  resource_group_name  = azurerm_resource_group.azure_resource_group[each.key].name
-  workspace_id         = azurerm_log_analytics_workspace.analytics_workspace[each.key].id
-  storage_account_id   = azurerm_storage_account.tfstate_storage_account[each.key].id
-  storage_account_key  = azurerm_storage_account.tfstate_storage_account[each.key].primary_access_key
-  blob_container_names = ["blob-[each.key]"]
-}
+#resource "azurerm_log_analytics_storage_insights" "analytics_storage_insights_ok" {
+#  for_each             = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
+#  name                 = "${each.key}-storageinsightconfig"
+#  resource_group_name  = azurerm_resource_group.azure_resource_group[each.key].name
+#  workspace_id         = azurerm_log_analytics_workspace.analytics_workspace[each.key].id
+#  storage_account_id   = azurerm_storage_account.tfstate_storage_account[each.key].id
+#  storage_account_key  = azurerm_storage_account.tfstate_storage_account[each.key].primary_access_key
+#  blob_container_names = ["blob-[each.key]"]
+#}
 
 resource "azurerm_storage_container" "azure_tfstate_container" {
   for_each              = { for deployment_environment in var.environments : deployment_environment.REPOSITORY_BRANCH => deployment_environment }
